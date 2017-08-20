@@ -1,16 +1,51 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 
 namespace Downloader
 {
     public partial class Download : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
+        {
+            var x = new FirebaseClient();
+        }
+    }
+
+    public class FirebaseClient
+    {
+        public FirebaseClient()
+        {
+            string firebase_url = ConfigurationManager.AppSettings["firebase_url"];
+            HttpWebRequest request = WebRequest.CreateHttp(firebase_url);
+            request.Method = "POST";
+            request.ContentType = "application/json";
+
+            DateTime now = DateTime.Now;
+            string json = JsonConvert.SerializeObject(new
+            {
+                Name = now.ToString("yyyyMMdd"),
+                Value = now.ToString("HHmmss")
+            });
+
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            request.ContentLength = data.Length;
+            request.GetRequestStream().Write(data, 0, data.Length);
+            WebResponse response = request.GetResponse();
+            json = new StreamReader(response.GetResponseStream()).ReadToEnd();
+        }
+    }
+
+    public class WebScrapper
+    {
+        public WebScrapper()
         {
             ScrapingBrowser Browser = new ScrapingBrowser();
             Browser.AllowAutoRedirect = true;
@@ -29,7 +64,7 @@ namespace Downloader
                 file = anchor.Attributes["href"].Value;
                 if (file.EndsWith(".xlsx"))
                 {
-                    Response.Write(file + "<br />");
+                    //Response.Write(file + "<br />");
                     downloader.Download(file);
                 }
             }
