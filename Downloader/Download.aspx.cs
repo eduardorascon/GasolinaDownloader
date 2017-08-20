@@ -22,16 +22,17 @@ namespace Downloader
             HtmlDocument doc = web.Load(url);
 
             string file = string.Empty;
+            FileDownloader downloader = new FileDownloader();
             HtmlNode TitleNode = doc.DocumentNode.CssSelect(".article-body").First();
-            foreach (var a in TitleNode.ChildNodes.CssSelect("a"))
+            foreach (var anchor in TitleNode.ChildNodes.CssSelect("a"))
             {
-                file = a.Attributes["href"].Value;
+                file = anchor.Attributes["href"].Value;
                 if (file.EndsWith(".xlsx"))
+                {
                     Response.Write(file + "<br />");
+                    downloader.Download(file);
+                }
             }
-
-            //FileDownloader downloader = new FileDownloader();
-            //downloader.Download();
         }
     }
 
@@ -39,16 +40,21 @@ namespace Downloader
     {
         public FileDownloader()
         {
-            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["base_url"]))
-                throw new ConfigurationErrorsException("base_url not found");
+            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["local_storage"]))
+                throw new ConfigurationErrorsException("local_storage not found");
         }
 
-        public void Download()
+        public void Download(string address)
         {
             WebClient client = new WebClient();
+            string fileName = ConfigurationManager.AppSettings["local_storage"] + GetFileName(address);
+            client.DownloadFile(address, fileName);
+        }
 
-            string url = ConfigurationManager.AppSettings["base_url"];
-            client.DownloadFile(new Uri(url), "C:/test.xlsx");
+        private string GetFileName(string file)
+        {
+            int startIndex = file.LastIndexOf("/");
+            return file.Substring(startIndex);
         }
     }
 }
