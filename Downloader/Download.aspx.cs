@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Configuration;
+using System.Net;
 
 namespace Downloader
 {
@@ -11,7 +8,23 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            FileDownloader downloader = new FileDownloader();
+            downloader.Download();
+        }
+    }
 
+    public class FileDownloader
+    {
+        public FileDownloader()
+        {
+        }
+
+        public void Download()
+        {
+            WebClient client = new WebClient();
+
+            string url = ConfigurationManager.AppSettings["base_url"];
+            client.DownloadFile(new Uri(url), "C:/test.xlsx");
         }
     }
 }
