@@ -1,5 +1,9 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using ScrapySharp.Extensions;
+using ScrapySharp.Network;
+using System;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 
 namespace Downloader
@@ -8,8 +12,26 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            FileDownloader downloader = new FileDownloader();
-            downloader.Download();
+            ScrapingBrowser Browser = new ScrapingBrowser();
+            Browser.AllowAutoRedirect = true;
+            Browser.AllowMetaRedirect = true;
+
+            string url = ConfigurationManager.AppSettings["url_to_scrap"];
+
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load(url);
+
+            string file = string.Empty;
+            HtmlNode TitleNode = doc.DocumentNode.CssSelect(".article-body").First();
+            foreach (var a in TitleNode.ChildNodes.CssSelect("a"))
+            {
+                file = a.Attributes["href"].Value;
+                if (file.EndsWith(".xlsx"))
+                    Response.Write(file + "<br />");
+            }
+
+            //FileDownloader downloader = new FileDownloader();
+            //downloader.Download();
         }
     }
 
@@ -17,6 +39,8 @@ namespace Downloader
     {
         public FileDownloader()
         {
+            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["base_url"]))
+                throw new ConfigurationErrorsException("base_url not found");
         }
 
         public void Download()
