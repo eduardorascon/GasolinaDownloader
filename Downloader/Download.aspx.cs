@@ -15,7 +15,8 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var x = new FirebaseClient();
+            //var x = new FirebaseClient();
+            WebScrapper ws = new WebScrapper();
         }
     }
 
@@ -83,7 +84,16 @@ namespace Downloader
         {
             WebClient client = new WebClient();
             string fileName = ConfigurationManager.AppSettings["local_storage"] + GetFileName(address);
-            client.DownloadFile(address, fileName);
+            //            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            try
+            {
+                client.DownloadFile(address, fileName);
+            }
+            catch (Exception)
+            {
+                address = address.Replace("https://", "http://");
+                client.DownloadFile(address, fileName);
+            }
         }
 
         private string GetFileName(string file)
