@@ -4,6 +4,7 @@ using OfficeOpenXml;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -64,47 +65,87 @@ namespace Downloader
 
             this.fileName = fileName;
         }
-        private void GenerateJson()
+        private string GenerateJson(List<Entity> entidades)
         {
             if (string.IsNullOrEmpty(fileName))
-                return;
+                throw new ArgumentNullException();
 
-            //sample
-            //using (StreamWriter file = File.CreateText(@"c:\videogames.json")
+            string json = string.Empty;
+            foreach (Entity e in entidades)
+            {
+                string json1 = JsonConvert.SerializeObject(new
+                {
+                    Entidad = e.entidad,
+                    Valores = new
+                    {
+                        Magna = e.magna,
+                        Premium = e.premium,
+                        Diesel = e.diesel
+                    }
+                });
+
+                json = string.Concat(json, json1);
+            }
+
+            try
+            {
+                File.WriteAllText(@"C:/gasolina.json", json);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return json;
         }
         public string Read()
         {
             ExcelPackage excelFile = new ExcelPackage(new FileInfo(fileName));
             ExcelWorksheet worksheet = excelFile.Workbook.Worksheets[1];
             ExcelWorksheet.MergeCellsCollection mergedCells = worksheet.MergedCells;
-            foreach (ExcelRange m in mergedCells)
+
+            List<Entity> entidades = new List<Entity>();
+            foreach (string mc in mergedCells)
             {
-                if (m.Address.StartsWith("C") == false)
+                if (mc.StartsWith("C") == false)
                     continue;
 
+                ExcelRange m = worksheet.Cells[mc.ToString()];
                 int startrow = m.Start.Row;
+
+                if (startrow <= 4)
+                    continue;
+
                 int endrow = m.End.Row;
 
                 while (startrow != endrow)
                 {
-                    Entity e = new Entity(m.Value.ToString(), worksheet.Cells["D" + startrow].Value.ToString());
+                    string cell = "D" + startrow;
+                    entidades.Add(new Entity(m.Value.ToString())
+                    {
+                        ciudad = worksheet.Cells[cell].Value.ToString(),
+                        magna = worksheet.Cells[cell.Replace("D", "E")].Value.ToString(),
+                        premium = worksheet.Cells[cell.Replace("D", "F")].Value.ToString(),
+                        diesel = worksheet.Cells[cell.Replace("D", "G")].Value.ToString()
+                    });
+
                     startrow++;
                 }
             }
 
-            return string.Empty;
+            return GenerateJson(entidades);
         }
 
-        class Entity
+        public class Entity
         {
-            private string entidad { get; }
-            private string ciudad { get; }
-            private string magna { get; }
-            private string premium { get; }
-            private string diesel { get; }
-            public Entity(string entidad, string ciudad)
+            public string entidad { get; }
+            public string ciudad { get; set; }
+            public string magna { get; set; }
+            public string premium { get; set; }
+            public string diesel { get; set; }
+            public Entity(string entidad)
             {
-
+                this.entidad = entidad;
             }
         }
     }
