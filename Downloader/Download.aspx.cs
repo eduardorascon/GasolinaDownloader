@@ -82,9 +82,13 @@ namespace Downloader
 
         public void Download(string address)
         {
-            WebClient client = new WebClient();
             string fileName = ConfigurationManager.AppSettings["local_storage"] + GetFileName(address);
             //            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            if (File.Exists(fileName))
+                return;
+
+            WebClient client = new WebClient();
             try
             {
                 client.DownloadFile(address, fileName);
