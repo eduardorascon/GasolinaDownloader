@@ -76,7 +76,8 @@ namespace Downloader
                 string json1 = JsonConvert.SerializeObject(new
                 {
                     Entidad = e.entidad,
-                    Valores = new
+                    Ciudad = e.ciudad,
+                    Precios = new
                     {
                         Magna = e.magna,
                         Premium = e.premium,
@@ -121,8 +122,9 @@ namespace Downloader
                 while (startrow != endrow)
                 {
                     string cell = "D" + startrow;
-                    entidades.Add(new Entity(m.Value.ToString())
+                    entidades.Add(new Entity()
                     {
+                        entidad = m.First().Value.ToString(),
                         ciudad = worksheet.Cells[cell].Value.ToString(),
                         magna = worksheet.Cells[cell.Replace("D", "E")].Value.ToString(),
                         premium = worksheet.Cells[cell.Replace("D", "F")].Value.ToString(),
@@ -138,15 +140,11 @@ namespace Downloader
 
         public class Entity
         {
-            public string entidad { get; }
+            public string entidad { get; set; }
             public string ciudad { get; set; }
             public string magna { get; set; }
             public string premium { get; set; }
             public string diesel { get; set; }
-            public Entity(string entidad)
-            {
-                this.entidad = entidad;
-            }
         }
     }
 
