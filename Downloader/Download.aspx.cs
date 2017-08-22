@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using System;
@@ -15,8 +16,10 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //var x = new FirebaseClient();
-            WebScrapper ws = new WebScrapper();
+            ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel22deAgostode2017.xlsx");
+            efl.Read();
+            //FirebaseClient x = new FirebaseClient();
+            //WebScrapper ws = new WebScrapper();
         }
     }
 
@@ -30,6 +33,10 @@ namespace Downloader
             request.ContentType = "application/json";
 
             DateTime now = DateTime.Now;
+
+            //TODO
+            //To be replaced with string json = File.ReadAll(filename);
+            //Filename should be a .json file
             string json = JsonConvert.SerializeObject(new
             {
                 Name = now.ToString("yyyyMMdd"),
@@ -41,6 +48,64 @@ namespace Downloader
             request.GetRequestStream().Write(data, 0, data.Length);
             WebResponse response = request.GetResponse();
             json = new StreamReader(response.GetResponseStream()).ReadToEnd();
+        }
+    }
+
+    public class ExcelFileReader
+    {
+        private string fileName = string.Empty;
+        public ExcelFileReader(string fileName)
+        {
+            if (fileName.EndsWith(".xlsx") == false)
+                throw new FileFormatException(fileName);
+
+            if (File.Exists(fileName) == false)
+                throw new FileNotFoundException();
+
+            this.fileName = fileName;
+        }
+        private void GenerateJson()
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            //sample
+            //using (StreamWriter file = File.CreateText(@"c:\videogames.json")
+        }
+        public string Read()
+        {
+            ExcelPackage excelFile = new ExcelPackage(new FileInfo(fileName));
+            ExcelWorksheet worksheet = excelFile.Workbook.Worksheets[1];
+            ExcelWorksheet.MergeCellsCollection mergedCells = worksheet.MergedCells;
+            foreach (ExcelRange m in mergedCells)
+            {
+                if (m.Address.StartsWith("C") == false)
+                    continue;
+
+                int startrow = m.Start.Row;
+                int endrow = m.End.Row;
+
+                while (startrow != endrow)
+                {
+                    Entity e = new Entity(m.Value.ToString(), worksheet.Cells["D" + startrow].Value.ToString());
+                    startrow++;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        class Entity
+        {
+            private string entidad { get; }
+            private string ciudad { get; }
+            private string magna { get; }
+            private string premium { get; }
+            private string diesel { get; }
+            public Entity(string entidad, string ciudad)
+            {
+
+            }
         }
     }
 
