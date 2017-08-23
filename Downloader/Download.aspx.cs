@@ -65,11 +65,45 @@ namespace Downloader
 
             this.fileName = fileName;
         }
-        private string GenerateJson(List<Entity> entidades)
+        private string GenerateJsonFiles(List<Entity> entidades)
         {
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException();
 
+            GenerateJsonEstados(entidades);
+            GenerateJsonPrecios(entidades);
+
+            return string.Empty;
+        }
+
+        private void GenerateJsonEstados(List<Entity> entidades)
+        {
+            string json = string.Empty;
+            foreach (Entity e in entidades)
+            {
+                string json1 = JsonConvert.SerializeObject(new
+                {
+                    Estados = new
+                    {
+                        Estado = e.entidad
+                    }
+                });
+
+                json = string.Concat(json, json1);
+            }
+
+            try
+            {
+                File.WriteAllText(@"C:/estados.json", json);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void GenerateJsonPrecios(List<Entity> entidades)
+        {
             string json = string.Empty;
             foreach (Entity e in entidades)
             {
@@ -96,9 +130,8 @@ namespace Downloader
             {
                 throw;
             }
-
-            return json;
         }
+
         public string Read()
         {
             ExcelPackage excelFile = new ExcelPackage(new FileInfo(fileName));
@@ -135,7 +168,7 @@ namespace Downloader
                 }
             }
 
-            return GenerateJson(entidades);
+            return GenerateJsonFiles(entidades);
         }
 
         public class Entity
