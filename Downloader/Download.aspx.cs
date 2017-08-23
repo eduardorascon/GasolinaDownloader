@@ -119,7 +119,7 @@ namespace Downloader
 
                 int endrow = m.End.Row;
 
-                while (startrow != endrow)
+                while (startrow <= endrow)
                 {
                     string cell = "D" + startrow;
                     entidades.Add(new Entity()
