@@ -78,22 +78,22 @@ namespace Downloader
 
         private void GenerateJsonEstados(List<Entity> entidades)
         {
-            string json = string.Empty;
             HashSet<string> listToJson = new HashSet<string>();
-
             foreach (Entity e in entidades)
                 listToJson.Add(e.entidad);
 
-            json = JsonConvert.SerializeObject(new { Estados = listToJson });
+            Dictionary<string, bool> dict = listToJson.ToDictionary(h => h, h => true);
+            string estadosJson = JsonConvert.SerializeObject(new { estados = dict });
 
             try
             {
-                File.WriteAllText(@"C:/estados.json", json);
+                File.WriteAllText(@"D:/estados.json", estadosJson);
             }
             catch (Exception)
             {
                 throw;
             }
+
         }
 
         private void GenerateJsonPrecios(List<Entity> entidades)
