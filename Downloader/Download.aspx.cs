@@ -71,7 +71,7 @@ namespace Downloader
                 throw new ArgumentNullException();
 
             GenerateJsonEstados(entidades);
-            GenerateJsonPrecios(entidades);
+            //GenerateJsonPrecios(entidades);
 
             return string.Empty;
         }
@@ -79,18 +79,12 @@ namespace Downloader
         private void GenerateJsonEstados(List<Entity> entidades)
         {
             string json = string.Empty;
-            foreach (Entity e in entidades)
-            {
-                string json1 = JsonConvert.SerializeObject(new
-                {
-                    Estados = new
-                    {
-                        Estado = e.entidad
-                    }
-                });
+            HashSet<string> listToJson = new HashSet<string>();
 
-                json = string.Concat(json, json1);
-            }
+            foreach (Entity e in entidades)
+                listToJson.Add(e.entidad);
+
+            json = JsonConvert.SerializeObject(new { Estados = listToJson });
 
             try
             {
