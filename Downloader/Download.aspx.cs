@@ -70,8 +70,8 @@ namespace Downloader
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException();
 
-            GenerateJsonEstados(entidades);
-            //GenerateJsonPrecios(entidades);
+            //GenerateJsonEstados(entidades);
+            GenerateJsonPrecios(entidades);
 
             return string.Empty;
         }
@@ -93,32 +93,26 @@ namespace Downloader
             {
                 throw;
             }
-
         }
 
         private void GenerateJsonPrecios(List<Entity> entidades)
         {
-            string json = string.Empty;
+            HashSet<string> listToJson = new HashSet<string>();
+            foreach (Entity e in entidades)
+                listToJson.Add(e.entidad);
+
+            Dictionary<string, Dictionary<string, string>> dict = listToJson.ToDictionary(h => h, h => new Dictionary<string, string>());
             foreach (Entity e in entidades)
             {
-                string json1 = JsonConvert.SerializeObject(new
-                {
-                    Entidad = e.entidad,
-                    Ciudad = e.ciudad,
-                    Precios = new
-                    {
-                        Magna = e.magna,
-                        Premium = e.premium,
-                        Diesel = e.diesel
-                    }
-                });
-
-                json = string.Concat(json, json1);
+                var d = dict[e.entidad];
+                d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
             }
+
+            string preciosJson = JsonConvert.SerializeObject(new { precios = dict });
 
             try
             {
-                File.WriteAllText(@"C:/gasolina.json", json);
+                File.WriteAllText(@"D:/precios.json", preciosJson);
             }
             catch (Exception)
             {
