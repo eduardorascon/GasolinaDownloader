@@ -21,8 +21,8 @@ namespace Downloader
         {
             //WebScrapper ws = new WebScrapper();
             ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel25deAgostode2017.xlsx");
-            //efl.Read();
-            efl.DiffyPatch();
+            efl.Read();
+            //efl.DiffyPatch();
             //FirebaseClient x = new FirebaseClient();
         }
     }
@@ -86,7 +86,7 @@ namespace Downloader
                 listToJson.Add(e.entidad);
 
             Dictionary<string, bool> dict = listToJson.ToDictionary(h => h, h => true);
-            string estadosJson = JsonConvert.SerializeObject(new { dict }, Formatting.Indented);
+            string estadosJson = JsonConvert.SerializeObject(new { estados = dict }, Formatting.Indented);
 
             try
             {
@@ -112,7 +112,7 @@ namespace Downloader
                 d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
             }
 
-            string preciosJson = JsonConvert.SerializeObject(new { dict }, Formatting.Indented);
+            string preciosJson = JsonConvert.SerializeObject(new { precios = dict }, Formatting.Indented);
 
             try
             {
