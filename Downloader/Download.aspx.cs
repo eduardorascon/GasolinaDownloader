@@ -19,9 +19,9 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //WebScrapper ws = new WebScrapper();
-            ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel25deAgostode2017.xlsx");
-            efl.Read();
+            WebScrapper ws = new WebScrapper();
+            //ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel25deAgostode2017.xlsx");
+            //efl.Read();
             //efl.DiffyPatch();
             //FirebaseClient x = new FirebaseClient();
         }
@@ -207,7 +207,6 @@ namespace Downloader
             HtmlDocument doc = web.Load(url);
 
             string file = string.Empty;
-            FileDownloader downloader = new FileDownloader();
             HtmlNode TitleNode = doc.DocumentNode.CssSelect(".article-body").First();
             foreach (var anchor in TitleNode.ChildNodes.CssSelect("a"))
             {
@@ -215,24 +214,14 @@ namespace Downloader
                 if (file.EndsWith(".xlsx"))
                 {
                     //Response.Write(file + "<br />");
-                    downloader.Download(file);
+                    DownloadExcelFile(file);
                 }
             }
         }
-    }
-
-    public class FileDownloader
-    {
-        public FileDownloader()
+        private void DownloadExcelFile(string address)
         {
-            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["local_storage"]))
-                throw new ConfigurationErrorsException("local_storage not found");
-        }
-
-        public void Download(string address)
-        {
-            string fileName = ConfigurationManager.AppSettings["local_storage"] + GetFileName(address);
-            //            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            string excelFilesDirectory = System.Web.HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["local_storage"];
+            string fileName = excelFilesDirectory + GetFileName(address);
 
             if (File.Exists(fileName))
                 return;
