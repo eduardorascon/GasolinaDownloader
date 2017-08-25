@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
+using JsonDiffPatchDotNet;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
@@ -18,10 +19,11 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel22deAgostode2017.xlsx");
-            efl.Read();
-            //FirebaseClient x = new FirebaseClient();
             //WebScrapper ws = new WebScrapper();
+            ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel25deAgostode2017.xlsx");
+            //efl.Read();
+            efl.DiffyPatch();
+            //FirebaseClient x = new FirebaseClient();
         }
     }
 
@@ -71,7 +73,7 @@ namespace Downloader
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException();
 
-            //GenerateJsonEstados(entidades);
+            GenerateJsonEstados(entidades);
             GenerateJsonPrecios(entidades);
 
             return string.Empty;
@@ -84,11 +86,12 @@ namespace Downloader
                 listToJson.Add(e.entidad);
 
             Dictionary<string, bool> dict = listToJson.ToDictionary(h => h, h => true);
-            string estadosJson = JsonConvert.SerializeObject(new { estados = dict }, Formatting.Indented);
+            string estadosJson = JsonConvert.SerializeObject(new { dict }, Formatting.Indented);
 
             try
             {
-                File.WriteAllText(@"D:/estados.json", estadosJson);
+                string fileName = DateTime.Today.ToString("yyyyMMdd");
+                File.WriteAllText(@"D:/" + fileName + "estados.json", estadosJson);
             }
             catch (Exception)
             {
@@ -109,11 +112,12 @@ namespace Downloader
                 d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
             }
 
-            string preciosJson = JsonConvert.SerializeObject(new { precios = dict }, Formatting.Indented);
+            string preciosJson = JsonConvert.SerializeObject(new { dict }, Formatting.Indented);
 
             try
             {
-                File.WriteAllText(@"D:/precios.json", preciosJson);
+                string fileName = DateTime.Today.ToString("yyyyMMdd");
+                File.WriteAllText(@"D:/" + fileName + "precios.json", preciosJson);
             }
             catch (Exception)
             {
@@ -158,6 +162,25 @@ namespace Downloader
             }
 
             return GenerateJsonFiles(entidades);
+        }
+
+        public void DiffyPatch()
+        {
+            JsonDiffPatch jsonDiff = new JsonDiffPatch();
+            JToken x = JObject.Parse(File.ReadAllText(@"D:\20170824precios.json"));
+            JToken y = JObject.Parse(File.ReadAllText(@"D:\20170825precios.json"));
+            JToken diff = jsonDiff.Diff(x, y);
+            JToken patch = jsonDiff.Patch(x, diff);
+
+            try
+            {
+                File.WriteAllText(@"D:/diff.json", JsonConvert.SerializeObject(diff, Formatting.Indented));
+                File.WriteAllText(@"D:/patch.json", JsonConvert.SerializeObject(patch, Formatting.Indented));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public class Entity
