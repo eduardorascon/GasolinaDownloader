@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using OfficeOpenXml;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
@@ -83,7 +84,7 @@ namespace Downloader
                 listToJson.Add(e.entidad);
 
             Dictionary<string, bool> dict = listToJson.ToDictionary(h => h, h => true);
-            string estadosJson = JsonConvert.SerializeObject(new { estados = dict });
+            string estadosJson = JsonConvert.SerializeObject(new { estados = dict }, Formatting.Indented);
 
             try
             {
@@ -108,7 +109,7 @@ namespace Downloader
                 d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
             }
 
-            string preciosJson = JsonConvert.SerializeObject(new { precios = dict });
+            string preciosJson = JsonConvert.SerializeObject(new { precios = dict }, Formatting.Indented);
 
             try
             {
