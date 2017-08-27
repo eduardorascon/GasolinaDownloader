@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
 
 namespace Downloader
 {
@@ -19,9 +20,8 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            WebScrapper ws = new WebScrapper();
-            //ExcelFileReader efl = new ExcelFileReader(@"C:/Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel25deAgostode2017.xlsx");
-            //efl.Read();
+            //WebScrapper ws = new WebScrapper();
+            ExcelFileReader efl = new ExcelFileReader();
             //efl.DiffyPatch();
             //FirebaseClient x = new FirebaseClient();
         }
@@ -58,6 +58,20 @@ namespace Downloader
     public class ExcelFileReader
     {
         private string fileName = string.Empty;
+        private string excelFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["excel_storage"];
+        private string jsonFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["json_storage"];
+
+        public ExcelFileReader()
+        {
+            string[] excelFiles = Directory.GetFiles(excelFilesDirectory);
+
+            foreach (string s in excelFiles)
+            {
+                ExcelFileReader excelFileReader = new ExcelFileReader(s);
+                excelFileReader.Read();
+            }
+        }
+
         public ExcelFileReader(string fileName)
         {
             if (fileName.EndsWith(".xlsx") == false)
@@ -68,15 +82,11 @@ namespace Downloader
 
             this.fileName = fileName;
         }
-        private string GenerateJsonFiles(List<Entity> entidades)
-        {
-            if (string.IsNullOrEmpty(fileName))
-                throw new ArgumentNullException();
 
+        private void GenerateJsonFiles(List<Entity> entidades)
+        {
             GenerateJsonEstados(entidades);
             GenerateJsonPrecios(entidades);
-
-            return string.Empty;
         }
 
         private void GenerateJsonEstados(List<Entity> entidades)
@@ -90,8 +100,8 @@ namespace Downloader
 
             try
             {
-                string fileName = DateTime.Today.ToString("yyyyMMdd");
-                File.WriteAllText(@"D:/" + fileName + "estados.json", estadosJson);
+                string fileName = jsonFilesDirectory + "/" + DateTime.Today.ToString("yyyyMMdd") + "estados.json";
+                File.WriteAllText(fileName, estadosJson);
             }
             catch (Exception)
             {
@@ -116,8 +126,8 @@ namespace Downloader
 
             try
             {
-                string fileName = DateTime.Today.ToString("yyyyMMdd");
-                File.WriteAllText(@"D:/" + fileName + "precios.json", preciosJson);
+                string fileName = jsonFilesDirectory + "/" + DateTime.Today.ToString("yyyyMMdd") + "precios.json";
+                File.WriteAllText(fileName, preciosJson);
             }
             catch (Exception)
             {
@@ -125,8 +135,12 @@ namespace Downloader
             }
         }
 
-        public string Read()
+        public void Read()
         {
+            string jsonFile = jsonFilesDirectory + "/" + Path.GetFileName(fileName).Substring(83).Replace(".xlsx", ".json");
+            if (File.Exists(jsonFile))
+                return;
+
             ExcelPackage excelFile = new ExcelPackage(new FileInfo(fileName));
             ExcelWorksheet worksheet = excelFile.Workbook.Worksheets[1];
             ExcelWorksheet.MergeCellsCollection mergedCells = worksheet.MergedCells;
@@ -161,7 +175,7 @@ namespace Downloader
                 }
             }
 
-            return GenerateJsonFiles(entidades);
+            GenerateJsonFiles(entidades);
         }
 
         public void DiffyPatch()
@@ -174,8 +188,8 @@ namespace Downloader
 
             try
             {
-                File.WriteAllText(@"D:/diff.json", JsonConvert.SerializeObject(diff, Formatting.Indented));
-                File.WriteAllText(@"D:/patch.json", JsonConvert.SerializeObject(patch, Formatting.Indented));
+                File.WriteAllText(jsonFilesDirectory + "diff.json", JsonConvert.SerializeObject(diff, Formatting.Indented));
+                File.WriteAllText(jsonFilesDirectory + "patch.json", JsonConvert.SerializeObject(patch, Formatting.Indented));
             }
             catch (Exception)
             {
@@ -220,7 +234,7 @@ namespace Downloader
         }
         private void DownloadExcelFile(string address)
         {
-            string excelFilesDirectory = System.Web.HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["local_storage"];
+            string excelFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["excel_storage"];
             string fileName = excelFilesDirectory + GetFileName(address);
 
             if (File.Exists(fileName))
