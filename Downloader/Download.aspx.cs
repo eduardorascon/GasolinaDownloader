@@ -58,6 +58,7 @@ namespace Downloader
     public class ExcelFileReader
     {
         private string fileName = string.Empty;
+        private string jsonFile = string.Empty;
         private string excelFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["excel_storage"];
         private string jsonFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["json_storage"];
 
@@ -100,7 +101,7 @@ namespace Downloader
 
             try
             {
-                string fileName = jsonFilesDirectory + "/" + DateTime.Today.ToString("yyyyMMdd") + "estados.json";
+                string fileName = jsonFile.Replace(".json", "estados.json");
                 File.WriteAllText(fileName, estadosJson);
             }
             catch (Exception)
@@ -126,7 +127,7 @@ namespace Downloader
 
             try
             {
-                string fileName = jsonFilesDirectory + "/" + DateTime.Today.ToString("yyyyMMdd") + "precios.json";
+                string fileName = jsonFile.Replace(".json", "precios.json");
                 File.WriteAllText(fileName, preciosJson);
             }
             catch (Exception)
@@ -137,9 +138,7 @@ namespace Downloader
 
         public void Read()
         {
-            string jsonFile = jsonFilesDirectory + "/" + Path.GetFileName(fileName).Substring(83).Replace(".xlsx", ".json");
-            if (File.Exists(jsonFile))
-                return;
+            jsonFile = jsonFilesDirectory + "/" + Path.GetFileName(fileName).Substring(82).Replace(".xlsx", ".json");
 
             ExcelPackage excelFile = new ExcelPackage(new FileInfo(fileName));
             ExcelWorksheet worksheet = excelFile.Workbook.Worksheets[1];
