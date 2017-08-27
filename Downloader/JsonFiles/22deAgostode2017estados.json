@@ -1,0 +1,30 @@
+{
+  "estados": {
+    "GUERRERO": true,
+    "JALISCO": true,
+    "AGUASCALIENTES": true,
+    "CIUDAD DE MÉXICO": true,
+    "ESTADO DE MÉXICO": true,
+    "COLIMA": true,
+    "CAMPECHE": true,
+    "GUANAJUATO": true,
+    "SINALOA": true,
+    "DURANGO": true,
+    "PUEBLA": true,
+    "MORELOS": true,
+    "ZACATECAS": true,
+    "VERACRUZ DE IGNACIO DE LA LLAVE": true,
+    "BAJA CALIFORNIA SUR": true,
+    "MICHOACÁN DE OCAMPO": true,
+    "SAN LUIS POTOSÍ": true,
+    "YUCATÁN": true,
+    "OAXACA": true,
+    "HIDALGO": true,
+    "TLAXCALA": true,
+    "QUERÉTARO": true,
+    "CHIAPAS": true,
+    "NAYARIT": true,
+    "QUINTANA ROO": true,
+    "TABASCO": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "estados": {
+    "CHIAPAS": true,
+    "VERACRUZ DE IGNACIO DE LA LLAVE": true,
+    "OAXACA": true,
+    "TABASCO": true,
+    "TLAXCALA": true,
+    "ESTADO DE MÉXICO": true,
+    "PUEBLA": true,
+    "MICHOACÁN DE OCAMPO": true,
+    "GUERRERO": true,
+    "HIDALGO": true,
+    "JALISCO": true,
+    "SAN LUIS POTOSÍ": true,
+    "SINALOA": true,
+    "ZACATECAS": true,
+    "AGUASCALIENTES": true,
+    "NAYARIT": true,
+    "DURANGO": true,
+    "QUERÉTARO": true,
+    "BAJA CALIFORNIA SUR": true,
+    "QUINTANA ROO": true,
+    "YUCATÁN": true,
+    "GUANAJUATO": true,
+    "COLIMA": true,
+    "MORELOS": true,
+    "CAMPECHE": true,
+    "CIUDAD DE MÉXICO": true
+  }
+}
