@@ -41,14 +41,16 @@ namespace Downloader
             return files;
         }
 
-        public static void DownloadExcelFiles(string downloadDirectory, List<string> files)
+        public static List<string> DownloadExcelFiles(string downloadDirectory, List<string> files)
         {
             if (files.Count == 0 || string.IsNullOrEmpty(downloadDirectory))
-                return;
+                throw new ArgumentNullException();
 
             if (Directory.Exists(downloadDirectory) == false)
                 Directory.CreateDirectory(downloadDirectory);
 
+            //Return variable.
+            List<string> newExcelFiles = new List<string>();
             string newfile = string.Empty;
             foreach (string fileToDownload in files)
             {
@@ -58,7 +60,10 @@ namespace Downloader
                     continue;
 
                 DownloadExcelFile(fileToDownload, newfile);
+                newExcelFiles.Add(newfile);
             }
+
+            return newExcelFiles;
         }
 
         private static void DownloadExcelFile(string fileToDownload, string newFile)
