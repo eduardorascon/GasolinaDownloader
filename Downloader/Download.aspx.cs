@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Web;
 
 namespace Downloader
 {
@@ -6,10 +9,15 @@ namespace Downloader
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            WebScrapper ws = new WebScrapper();
-            ExcelFileReader efl = new ExcelFileReader();
+            string url = ConfigurationManager.AppSettings["url_to_scrap"];
+            List<string> files = WebScrapper.LookupForExcelFiles(url);
+
+            string excelFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["excel_storage"];
+            WebScrapper.DownloadExcelFiles(excelFilesDirectory, files);
+
+            //ExcelFileReader efl = new ExcelFileReader();
             //efl.DiffyPatch();
-            FirebaseClient x = new FirebaseClient();
+            //FirebaseClient x = new FirebaseClient();
         }
     }
 }
