@@ -3,6 +3,7 @@ using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -78,6 +79,25 @@ namespace Downloader
         {
             int startIndex = file.LastIndexOf("/") + 1;
             return file.Substring(startIndex);
+        }
+
+        private static string TryAndParseFileName(string fileName)
+        {
+            int startIndex = fileName.LastIndexOf("/") + 1;
+            fileName = fileName.Substring(startIndex);
+            fileName = fileName.Replace("Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel", string.Empty);
+            fileName = fileName.Replace("de", string.Empty);
+
+            try
+            {
+                return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+            }
+            catch (Exception)
+            {
+                startIndex = fileName.LastIndexOf("al") + 2;
+                fileName = fileName.Substring(startIndex).Replace(".xlsx", string.Empty);
+                return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+            }
         }
     }
 }
