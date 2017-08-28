@@ -40,41 +40,43 @@ namespace Downloader
             return files;
         }
 
-        public static void DownloadExcelFiles(string downloadDirectory, List<string> list)
+        public static void DownloadExcelFiles(string downloadDirectory, List<string> files)
         {
-            if (list.Count == 0 || string.IsNullOrEmpty(downloadDirectory))
+            if (files.Count == 0 || string.IsNullOrEmpty(downloadDirectory))
                 return;
 
-            string fileName = string.Empty;
-            foreach (string file in list)
-            {
-                fileName = downloadDirectory + GetFileName(file);
+            if (Directory.Exists(downloadDirectory) == false)
+                Directory.CreateDirectory(downloadDirectory);
 
-                if (File.Exists(fileName))
+            string newfile = string.Empty;
+            foreach (string fileToDownload in files)
+            {
+                newfile = Path.Combine(downloadDirectory, GetFileName(fileToDownload));
+
+                if (File.Exists(newfile))
                     continue;
 
-                DownloadExcelFile(downloadDirectory, fileName);
+                DownloadExcelFile(fileToDownload, newfile);
             }
         }
 
-        private static void DownloadExcelFile(string downdloadDirectory, string file)
+        private static void DownloadExcelFile(string fileToDownload, string newFile)
         {
-            string fileName = downdloadDirectory + GetFileName(file);
             WebClient client = new WebClient();
             try
             {
-                client.DownloadFile(file, fileName);
+                client.DownloadFile(fileToDownload, newFile);
             }
             catch (Exception)
             {
-                file = file.Replace("https://", "http://");
-                client.DownloadFile(file, fileName);
+                newFile = newFile.Replace("https://", "http://");
+                client.DownloadFile(fileToDownload, newFile);
             }
         }
 
         private static string GetFileName(string file)
         {
-            int startIndex = file.LastIndexOf("/");
+            int startIndex = file.LastIndexOf("/") + 1;
             return file.Substring(startIndex);
         }
     }
