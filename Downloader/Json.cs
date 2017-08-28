@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace Downloader
 {
@@ -51,7 +50,7 @@ namespace Downloader
                 listToJson.Add(e.entidad);
 
             Dictionary<string, bool> dict = listToJson.ToDictionary(h => h, h => true);
-            return JsonConvert.SerializeObject(new { estados = dict }, Formatting.Indented);
+            return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 
         private static string GenerateJsonPrecios(List<PriceDTO> precios)
@@ -67,7 +66,7 @@ namespace Downloader
                 d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
             }
 
-            return JsonConvert.SerializeObject(new { precios = dict }, Formatting.Indented);
+            return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 
         //public void DiffyPatch()
