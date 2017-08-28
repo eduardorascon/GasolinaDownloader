@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
@@ -9,29 +10,24 @@ namespace Downloader
 {
     public class FirebaseClient
     {
-        public FirebaseClient()
+        public static void Update(List<string> files)
         {
-            string firebase_url = ConfigurationManager.AppSettings["firebase_url"];
-            HttpWebRequest request = WebRequest.CreateHttp(firebase_url);
-            request.Method = "POST";
-            request.ContentType = "application/json";
+            string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
 
-            DateTime now = DateTime.Now;
-
-            //TODO
-            //To be replaced with string json = File.ReadAll(filename);
-            //Filename should be a .json file
-            string json = JsonConvert.SerializeObject(new
+            string endpoint = string.Empty;
+            foreach (string file in files)
             {
-                Name = now.ToString("yyyyMMdd"),
-                Value = now.ToString("HHmmss")
-            });
-
-            byte[] data = Encoding.UTF8.GetBytes(json);
-            request.ContentLength = data.Length;
-            request.GetRequestStream().Write(data, 0, data.Length);
-            WebResponse response = request.GetResponse();
-            json = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                endpoint = base_firebase_url + Path.GetFileName(file).Replace(".json", "").Substring(8) + ".json";
+                string json = File.ReadAllText(file);
+                HttpWebRequest request = WebRequest.CreateHttp(endpoint);
+                request.Method = "PUT";
+                request.ContentType = "application/json";
+                byte[] data = Encoding.UTF8.GetBytes(json);
+                request.ContentLength = data.Length;
+                request.GetRequestStream().Write(data, 0, data.Length);
+                WebResponse response = request.GetResponse();
+                json = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            }
         }
     }
 }

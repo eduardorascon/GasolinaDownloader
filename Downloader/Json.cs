@@ -11,24 +11,30 @@ namespace Downloader
 {
     public class Json
     {
-        public static void WriteJsonFiles(string jsonDirectory, List<string> excelFiles)
+        static List<string> jsonFiles = new List<string>();
+        public static List<string> WriteJsonFiles(string jsonDirectory, List<string> excelFiles)
         {
+
             foreach (string file in excelFiles)
             {
                 string baseJsonFilename = TryAndParseFileName(file);
                 List<PriceDTO> precios = ExcelFileReader.Read(file);
                 GenerateJsonFiles(jsonDirectory, baseJsonFilename, precios);
             }
+
+            return jsonFiles;
         }
         private static void GenerateJsonFiles(string jsonDirectory, string baseJsonFilename, List<PriceDTO> precios)
         {
             try
             {
                 string fileName = Path.Combine(jsonDirectory, baseJsonFilename + "estados.json");
+                jsonFiles.Add(fileName);
                 string estadosJson = GenerateJsonEstados(precios);
                 File.WriteAllText(fileName, estadosJson);
 
                 fileName = Path.Combine(jsonDirectory, baseJsonFilename + "precios.json");
+                jsonFiles.Add(fileName);
                 string preciosJson = GenerateJsonPrecios(precios);
                 File.WriteAllText(fileName, preciosJson);
             }

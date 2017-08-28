@@ -15,10 +15,9 @@ namespace Downloader
             excelFiles = WebScrapper.DownloadExcelFiles(excelFilesDirectory, excelFiles);
 
             string jsonFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["json_storage"];
-            Json.WriteJsonFiles(jsonFilesDirectory, excelFiles);
-            //ExcelFileReader efl = new ExcelFileReader();
-            //efl.DiffyPatch();
-            //FirebaseClient x = new FirebaseClient();
+            List<string> jsonFiles =Json.WriteJsonFiles(jsonFilesDirectory, excelFiles);
+
+            FirebaseClient.Update(jsonFiles);
         }
     }
 }
