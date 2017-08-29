@@ -90,7 +90,7 @@ namespace Downloader
         private static string TryAndParseFileName(string fileName)
         {
             int startIndex = fileName.LastIndexOf("\\") + 1;
-            fileName = fileName.Substring(startIndex);
+            fileName = fileName.Substring(startIndex).Replace(".xlsx", string.Empty);
             fileName = fileName.Replace("Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel", string.Empty);
             fileName = fileName.Replace("de", string.Empty);
 
@@ -101,7 +101,7 @@ namespace Downloader
             catch (Exception)
             {
                 startIndex = fileName.LastIndexOf("al") + 2;
-                fileName = fileName.Substring(startIndex).Replace(".xlsx", string.Empty);
+                fileName = fileName.Substring(startIndex);
                 return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
             }
         }
