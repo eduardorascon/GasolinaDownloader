@@ -16,6 +16,7 @@ namespace Downloader
             foreach (string file in files)
             {
                 endpoint = base_firebase_url + Path.GetFileName(file).Substring(8);
+                endpoint += "?auth=";
                 string json = File.ReadAllText(file);
                 HttpWebRequest request = WebRequest.CreateHttp(endpoint);
                 request.Method = "PUT";
