@@ -15,7 +15,7 @@ namespace Downloader
             string endpoint = string.Empty;
             foreach (string file in files)
             {
-                endpoint = base_firebase_url + Path.GetFileName(file).Replace(".json", "").Substring(8) + ".json";
+                endpoint = base_firebase_url + Path.GetFileName(file).Substring(8);
                 string json = File.ReadAllText(file);
                 HttpWebRequest request = WebRequest.CreateHttp(endpoint);
                 request.Method = "PUT";
