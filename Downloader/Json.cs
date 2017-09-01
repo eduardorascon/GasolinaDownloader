@@ -100,9 +100,16 @@ namespace Downloader
             }
             catch (Exception)
             {
-                startIndex = fileName.LastIndexOf("al") + 2;
-                fileName = fileName.Substring(startIndex);
-                return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+                if (fileName.Contains("al"))
+                {
+                    startIndex = fileName.LastIndexOf("al") + 2;
+                    fileName = fileName.Substring(startIndex);
+                    return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+                }
+                else
+                {
+                    return DateTime.ParseExact(fileName, "dMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+                }
             }
         }
     }
