@@ -1,10 +1,10 @@
-﻿using Downloader.DTO;
+﻿using DownloaderLibrary.DTO;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Downloader
+namespace DownloaderLibrary
 {
     public class ExcelFileReader
     {

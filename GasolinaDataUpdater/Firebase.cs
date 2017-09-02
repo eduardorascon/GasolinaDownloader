@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace Downloader
+namespace DownloaderLibrary
 {
     public class FirebaseClient
     {

@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
-namespace Downloader
+namespace DownloaderLibrary
 {
     public class WebScrapper
     {
