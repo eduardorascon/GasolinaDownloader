@@ -72,7 +72,7 @@ namespace DownloaderLibrary
                 catch
                 {
                     string rutaLog = ConfigurationManager.AppSettings["ruta_log"];
-                    File.AppendAllText(rutaLog, string.Format("Duplicado: {0}:{1}", e.entidad, e.ciudad));
+                    File.AppendAllText(rutaLog, string.Format("Duplicado: {0}:{1}{2}", e.entidad, e.ciudad, Environment.NewLine));
                 }
             }
 
