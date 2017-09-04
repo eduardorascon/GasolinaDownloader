@@ -3,6 +3,7 @@ using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -81,8 +82,31 @@ namespace DownloaderLibrary
 
         private static string GetFileName(string file)
         {
-            int startIndex = file.LastIndexOf("/") + 1;
-            return file.Substring(startIndex);
+            string startIndexString = "nortedel";
+            int startIndex = file.LastIndexOf(startIndexString) + startIndexString.Length;
+            string[] dateArray = file.Substring(startIndex).Replace(".xlsx", "").Split(new string[] { "de" }, StringSplitOptions.None);
+            string[] dayArray = dateArray[0].Split(new string[] { "al" }, StringSplitOptions.None);
+
+            string newFileName = string.Empty;
+            foreach (string day in dayArray)
+            {
+                if (string.IsNullOrEmpty(newFileName))
+                {
+                    newFileName = dateArray[2];
+                    newFileName += DateTime.ParseExact(dateArray[1], "MMMM", new CultureInfo("es-MX")).ToString("MM");
+                    newFileName += ("0" + day).Substring(("0" + day).Length - 2);
+                    continue;
+                }
+
+                if (newFileName.Length == 8)
+                {
+                    newFileName += "-" + dateArray[2];
+                    newFileName += DateTime.ParseExact(dateArray[1], "MMMM", new CultureInfo("es-MX")).ToString("MM");
+                    newFileName += ("0" + day).Substring(("0" + day).Length - 2);
+                }
+            }
+
+            return newFileName + ".xlsx";
         }
     }
 }
