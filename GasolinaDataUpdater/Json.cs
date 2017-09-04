@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 
@@ -63,8 +64,16 @@ namespace DownloaderLibrary
             Dictionary<string, Dictionary<string, string>> dict = listToJson.ToDictionary(h => h, h => new Dictionary<string, string>());
             foreach (PriceDTO e in precios)
             {
-                var d = dict[e.entidad];
-                d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
+                try
+                {
+                    var d = dict[e.entidad];
+                    d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
+                }
+                catch
+                {
+                    string rutaLog = ConfigurationManager.AppSettings["ruta_log"];
+                    File.AppendAllText(rutaLog, string.Format("Duplicado: {0}:{1}", e.entidad, e.ciudad));
+                }
             }
 
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
