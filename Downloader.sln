@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Downloader", "Downloader\Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloaderLibrary", "GasolinaDataUpdater\DownloaderLibrary.csproj", "{3FBDBA99-D11E-4FB1-AA41-72ACEA399FFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonFilesGenerator", "JsonFilesGenerator\JsonFilesGenerator.csproj", "{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3FBDBA99-D11E-4FB1-AA41-72ACEA399FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FBDBA99-D11E-4FB1-AA41-72ACEA399FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FBDBA99-D11E-4FB1-AA41-72ACEA399FFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
