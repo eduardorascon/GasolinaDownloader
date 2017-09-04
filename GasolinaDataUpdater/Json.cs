@@ -16,8 +16,8 @@ namespace DownloaderLibrary
 
             foreach (string file in excelFiles)
             {
-                string baseJsonFilename = TryAndParseFileName(file);
                 List<PriceDTO> precios = ExcelFileReader.Read(file);
+                string baseJsonFilename = Path.GetFileNameWithoutExtension(file);
                 GenerateJsonFiles(jsonDirectory, baseJsonFilename, precios);
             }
 
@@ -87,27 +87,5 @@ namespace DownloaderLibrary
         //        throw;
         //    }
         //}
-        private static string TryAndParseFileName(string fileName)
-        {
-            int startIndex = fileName.LastIndexOf("\\") + 1;
-            fileName = fileName.Substring(startIndex).Replace(".xlsx", string.Empty);
-            fileName = fileName.Replace("Acuerdodepublicaciondepreciosmaximosdeloscombustiblesyestimulodelafronteranortedel", string.Empty);
-            fileName = fileName.Replace("de", string.Empty);
-
-            try
-            {
-                return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
-            }
-            catch (Exception)
-            {
-                if (fileName.Contains("al") == false)
-                    return DateTime.ParseExact(fileName, "dMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
-
-                //else - fileName.Contains("al" == false)
-                startIndex = fileName.LastIndexOf("al") + 2;
-                fileName = fileName.Substring(startIndex);
-                return DateTime.ParseExact(fileName, "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
-            }
-        }
     }
 }
