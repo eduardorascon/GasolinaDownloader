@@ -1,8 +1,9 @@
 ﻿using DownloaderLibrary.DTO;
+using JsonDiffPatchDotNet;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -69,23 +70,23 @@ namespace DownloaderLibrary
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 
-        //public void DiffyPatch()
-        //{
-        //    JsonDiffPatch jsonDiff = new JsonDiffPatch();
-        //    JToken x = JObject.Parse(File.ReadAllText(@"D:\20170824precios.json"));
-        //    JToken y = JObject.Parse(File.ReadAllText(@"D:\20170825precios.json"));
-        //    JToken diff = jsonDiff.Diff(x, y);
-        //    JToken patch = jsonDiff.Patch(x, diff);
+        public void DiffyPatch(string file1, string file2)
+        {
+            JsonDiffPatch jsonDiff = new JsonDiffPatch();
+            JToken x = JObject.Parse(File.ReadAllText(file1));
+            JToken y = JObject.Parse(File.ReadAllText(file2));
+            JToken diff = jsonDiff.Diff(x, y);
+            JToken patch = jsonDiff.Patch(x, diff);
 
-        //    try
-        //    {
-        //        File.WriteAllText(jsonFilesDirectory + "diff.json", JsonConvert.SerializeObject(diff, Formatting.Indented));
-        //        File.WriteAllText(jsonFilesDirectory + "patch.json", JsonConvert.SerializeObject(patch, Formatting.Indented));
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+            try
+            {
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(file1), "diff.json"), JsonConvert.SerializeObject(diff, Formatting.Indented));
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(file1), "patch.json"), JsonConvert.SerializeObject(patch, Formatting.Indented));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
