@@ -94,13 +94,19 @@ namespace DownloaderLibrary
             JsonDiffPatch jsonDiff = new JsonDiffPatch();
             JToken x = JObject.Parse(File.ReadAllText(file1));
             JToken y = JObject.Parse(File.ReadAllText(file2));
+
             JToken diff = jsonDiff.Diff(x, y);
+            if (diff == null)
+                return;
+
             JToken patch = jsonDiff.Patch(x, diff);
 
             try
             {
-                File.WriteAllText(Path.Combine(Path.GetDirectoryName(file1), "diff.json"), JsonConvert.SerializeObject(diff, Formatting.Indented));
-                File.WriteAllText(Path.Combine(Path.GetDirectoryName(file1), "patch.json"), JsonConvert.SerializeObject(patch, Formatting.Indented));
+                string diffFile = Path.Combine(Path.GetDirectoryName(file1), Path.GetFileNameWithoutExtension(file1) + "_diff.json");
+                string patchFile = Path.Combine(Path.GetDirectoryName(file1), Path.GetFileNameWithoutExtension(file1) + "_patch.json");
+                File.WriteAllText(diffFile, JsonConvert.SerializeObject(diff, Formatting.Indented));
+                File.WriteAllText(patchFile, JsonConvert.SerializeObject(patch, Formatting.Indented));
             }
             catch (Exception)
             {
