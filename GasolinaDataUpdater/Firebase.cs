@@ -8,18 +8,18 @@ namespace DownloaderLibrary
 {
     public class FirebaseClient
     {
-        public static void Update(List<string> files)
+        public static void UpdateEstados(List<string> files)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
 
             string endpoint = string.Empty;
             foreach (string file in files)
             {
-                endpoint = base_firebase_url + Path.GetFileName(file).Substring(8);
+                endpoint = base_firebase_url + "estados.json";
                 endpoint += "?auth=";
                 string json = File.ReadAllText(file);
                 HttpWebRequest request = WebRequest.CreateHttp(endpoint);
-                request.Method = "PUT";
+                request.Method = "PATCH";
                 request.ContentType = "application/json";
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 request.ContentLength = data.Length;

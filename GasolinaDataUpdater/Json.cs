@@ -89,7 +89,7 @@ namespace DownloaderLibrary
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 
-        public static void DiffyPatch(string file1, string file2)
+        public static string DiffandPatch(string file1, string file2)
         {
             JsonDiffPatch jsonDiff = new JsonDiffPatch();
             JToken x = JObject.Parse(File.ReadAllText(file1));
@@ -97,7 +97,22 @@ namespace DownloaderLibrary
 
             JToken diff = jsonDiff.Diff(x, y);
             if (diff == null)
-                return;
+                return string.Empty;
+
+            //foreach (JToken d in diff.Values())
+            //{
+            //    foreach (JToken e in d.Children())
+            //    {
+            //        if (e == d.First())
+            //            continue;
+
+            //        if (e.Value<int>() == 0 && (e.Next).Value<int>() == 0)
+            //        {
+            //            d.Parent.Remove();
+            //            break;
+            //        }
+            //    }
+            //}
 
             JToken patch = jsonDiff.Patch(x, diff);
 
@@ -107,6 +122,7 @@ namespace DownloaderLibrary
                 string patchFile = Path.Combine(Path.GetDirectoryName(file1), Path.GetFileNameWithoutExtension(file1) + "_patch.json");
                 File.WriteAllText(diffFile, JsonConvert.SerializeObject(diff, Formatting.Indented));
                 File.WriteAllText(patchFile, JsonConvert.SerializeObject(patch, Formatting.Indented));
+                return patchFile;
             }
             catch (Exception)
             {
