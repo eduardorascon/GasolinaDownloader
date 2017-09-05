@@ -19,7 +19,6 @@ namespace JsonFilesGenerator
         {
             btnGenerar.Enabled = false;
             string excelFilesDirectory = ConfigurationManager.AppSettings["excel_storage"];
-            string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
             DateTime startDate = new DateTime(2017, 1, 1);
             DateTime endDate = DateTime.Today;
 
@@ -36,11 +35,14 @@ namespace JsonFilesGenerator
 
                 startDate = startDate.AddDays(1);
             }
-
+            UpdateEstados(excelFiles);
+        }
+        private void UpdateEstados(List<string> excelFiles)
+        {
             List<string> jsonPatchFiles = new List<string>();
             //First values
             jsonPatchFiles.Add(@"D:\repos\GasolinaDownloader\Downloader\JsonFiles\20170101-20170203estados.json");
-
+            string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
             List<string> jsonFiles = Json.GenerateEstadosJsonFiles(jsonFilesDirectory, excelFiles);
             string file1 = string.Empty;
             string file2 = string.Empty;
