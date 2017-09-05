@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Web;
 using System.Windows.Forms;
 
 namespace JsonFilesGenerator
@@ -22,7 +21,7 @@ namespace JsonFilesGenerator
             string excelFilesDirectory = ConfigurationManager.AppSettings["excel_storage"];
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
             DateTime startDate = new DateTime(2017, 1, 1);
-            DateTime endDate = new DateTime(2017, 2, 4);
+            DateTime endDate = new DateTime(2017, 3, 4);
 
             List<string> excelFiles = new List<string>();
             while (startDate <= endDate)
@@ -38,7 +37,22 @@ namespace JsonFilesGenerator
                 startDate = startDate.AddDays(1);
             }
 
-            List<string> jsonFiles = Json.WriteJsonFiles(jsonFilesDirectory, excelFiles);
+            List<string> jsonFiles = Json.GenerateEstadosJsonFiles(jsonFilesDirectory, excelFiles);
+            string file1 = string.Empty;
+            string file2 = string.Empty;
+            foreach (string file in jsonFiles)
+            {
+                if (file1.Equals(string.Empty))
+                {
+                    file1 = file;
+                    continue;
+                }
+
+                file2 = file;
+                Json.DiffyPatch(file1, file2);
+
+                file1 = file2;
+            }
         }
     }
 }
