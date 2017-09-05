@@ -12,37 +12,47 @@ namespace DownloaderLibrary
 {
     public class Json
     {
-        static List<string> jsonFiles = new List<string>();
-        public static List<string> WriteJsonFiles(string jsonDirectory, List<string> excelFiles)
+        public static List<string> GenerateEstadosJsonFiles(string jsonDirectory, List<string> excelFiles)
         {
-
+            List<string> jsonFiles = new List<string>();
             foreach (string file in excelFiles)
             {
-                List<PriceDTO> precios = ExcelFileReader.Read(file);
-                string baseJsonFilename = Path.GetFileNameWithoutExtension(file);
-                GenerateJsonFiles(jsonDirectory, baseJsonFilename, precios);
+                try
+                {
+                    List<PriceDTO> precios = ExcelFileReader.Read(file);
+                    string fileName = Path.Combine(jsonDirectory, Path.GetFileNameWithoutExtension(file) + "estados.json");
+                    jsonFiles.Add(fileName);
+                    string estadosJson = GenerateJsonEstados(precios);
+                    File.WriteAllText(fileName, estadosJson);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
 
             return jsonFiles;
         }
-        private static void GenerateJsonFiles(string jsonDirectory, string baseJsonFilename, List<PriceDTO> precios)
+        public static List<string> GeneratePreciosJsonFiles(string jsonDirectory, List<string> excelFiles)
         {
-            try
+            List<string> jsonFiles = new List<string>();
+            foreach (string file in excelFiles)
             {
-                string fileName = Path.Combine(jsonDirectory, baseJsonFilename + "estados.json");
-                jsonFiles.Add(fileName);
-                string estadosJson = GenerateJsonEstados(precios);
-                File.WriteAllText(fileName, estadosJson);
+                try
+                {
+                    List<PriceDTO> precios = ExcelFileReader.Read(file);
+                    string fileName = Path.Combine(jsonDirectory, Path.GetFileNameWithoutExtension(file) + "precios.json");
+                    jsonFiles.Add(fileName);
+                    string preciosJson = GenerateJsonPrecios(precios);
+                    File.WriteAllText(fileName, preciosJson);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
 
-                fileName = Path.Combine(jsonDirectory, baseJsonFilename + "precios.json");
-                jsonFiles.Add(fileName);
-                string preciosJson = GenerateJsonPrecios(precios);
-                File.WriteAllText(fileName, preciosJson);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return jsonFiles;
         }
 
         private static string GenerateJsonEstados(List<PriceDTO> precios)
@@ -79,7 +89,7 @@ namespace DownloaderLibrary
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 
-        public void DiffyPatch(string file1, string file2)
+        public static void DiffyPatch(string file1, string file2)
         {
             JsonDiffPatch jsonDiff = new JsonDiffPatch();
             JToken x = JObject.Parse(File.ReadAllText(file1));
