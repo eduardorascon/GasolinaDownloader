@@ -43,7 +43,7 @@ namespace DownloaderLibrary
                     List<PriceDTO> precios = ExcelFileReader.Read(file);
                     string fileName = Path.Combine(jsonDirectory, Path.GetFileNameWithoutExtension(file) + "precios.json");
                     jsonFiles.Add(fileName);
-                    string preciosJson = GenerateJsonPrecios(precios);
+                    string preciosJson = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(file).Substring(0, 8));
                     File.WriteAllText(fileName, preciosJson);
                 }
                 catch (Exception)
@@ -65,7 +65,7 @@ namespace DownloaderLibrary
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 
-        private static string GenerateJsonPrecios(List<PriceDTO> precios)
+        private static string GenerateJsonPrecios(List<PriceDTO> precios, string fechaArchivo)
         {
             HashSet<string> listToJson = new HashSet<string>();
             foreach (PriceDTO e in precios)
@@ -77,7 +77,7 @@ namespace DownloaderLibrary
                 try
                 {
                     var d = dict[e.entidad];
-                    d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
+                    d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}|F:{3}", e.magna, e.premium, e.diesel, fechaArchivo));
                 }
                 catch
                 {

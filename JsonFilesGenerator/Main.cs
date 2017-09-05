@@ -35,8 +35,39 @@ namespace JsonFilesGenerator
 
                 startDate = startDate.AddDays(1);
             }
-            UpdateEstados(excelFiles);
+
+           // UpdateEstados(excelFiles);
+            UpdatePrecios(excelFiles);
         }
+
+        private void UpdatePrecios(List<string> excelFiles)
+        {
+            List<string> jsonPatchFiles = new List<string>();
+            //First values
+            jsonPatchFiles.Add(@"D:\repos\GasolinaDownloader\Downloader\JsonFiles\20170101-20170203precios.json");
+            string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
+            List<string> jsonFiles = Json.GeneratePreciosJsonFiles(jsonFilesDirectory, excelFiles);
+            string file1 = string.Empty;
+            string file2 = string.Empty;
+            foreach (string file in jsonFiles)
+            {
+                if (file1.Equals(string.Empty))
+                {
+                    file1 = file;
+                    continue;
+                }
+
+                file2 = file;
+                string diffFile = Json.DiffandPatch(file1, file2);
+                if (File.Exists(diffFile))
+                    jsonPatchFiles.Add(diffFile);
+
+                file1 = file2;
+            }
+
+           // FirebaseClient.UpdatePrecios(jsonPatchFiles);
+        }
+
         private void UpdateEstados(List<string> excelFiles)
         {
             List<string> jsonPatchFiles = new List<string>();

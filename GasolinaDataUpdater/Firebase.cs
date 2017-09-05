@@ -28,5 +28,25 @@ namespace DownloaderLibrary
                 json = new StreamReader(response.GetResponseStream()).ReadToEnd();
             }
         }
+        public static void UpdatePrecios(List<string> files)
+        {
+            string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
+
+            string endpoint = string.Empty;
+            foreach (string file in files)
+            {
+                endpoint = base_firebase_url + "precios.json";
+                endpoint += "?auth=";
+                string json = File.ReadAllText(file);
+                HttpWebRequest request = WebRequest.CreateHttp(endpoint);
+                request.Method = "PATCH";
+                request.ContentType = "application/json";
+                byte[] data = Encoding.UTF8.GetBytes(json);
+                request.ContentLength = data.Length;
+                request.GetRequestStream().Write(data, 0, data.Length);
+                WebResponse response = request.GetResponse();
+                json = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            }
+        }
     }
 }
