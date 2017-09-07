@@ -99,21 +99,6 @@ namespace DownloaderLibrary
             if (diff == null)
                 return string.Empty;
 
-            //foreach (JToken d in diff.Values())
-            //{
-            //    foreach (JToken e in d.Children())
-            //    {
-            //        if (e == d.First())
-            //            continue;
-
-            //        if (e.Value<int>() == 0 && (e.Next).Value<int>() == 0)
-            //        {
-            //            d.Parent.Remove();
-            //            break;
-            //        }
-            //    }
-            //}
-
             JToken patch = jsonDiff.Patch(x, diff);
 
             try
@@ -128,6 +113,46 @@ namespace DownloaderLibrary
             {
                 throw;
             }
+        }
+
+        public static void PatchFile(string file1, string file2)
+        {
+            JsonDiffPatch jsonDiff = new JsonDiffPatch();
+            JToken x = JObject.Parse(File.ReadAllText(file1));
+            JToken y = JObject.Parse(File.ReadAllText(file2));
+
+            JToken diff = jsonDiff.Diff(x, y);
+            diff = RemoveDeleteNodesFromJson(diff);
+            //RemoveDeleteNodesFromJson(diff);
+
+            if (diff == null)
+                return;
+
+            JToken patch = jsonDiff.Patch(x, diff);
+
+            File.WriteAllText(file1, JsonConvert.SerializeObject(patch, Formatting.Indented));
+        }
+
+        private static JToken RemoveDeleteNodesFromJson(JToken diff)
+        {
+            if (diff == null)
+                return null;
+
+            JToken newDiff = diff.DeepClone();
+            foreach (JProperty prop in diff.Children<JProperty>())
+            {
+                JArray t = (JArray)newDiff[prop.Name];
+                JArray a = t;
+                int arrayLength = a.Count;
+
+                if (a[arrayLength - 1].Value<int>() == 0 && a[arrayLength - 2].Value<int>() == 0)
+                    t.Parent.Remove();
+            }
+
+            if (newDiff.FirstOrDefault() == null)
+                return null;
+
+            return newDiff;
         }
     }
 }

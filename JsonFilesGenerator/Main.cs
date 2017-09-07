@@ -36,8 +36,8 @@ namespace JsonFilesGenerator
                 startDate = startDate.AddDays(1);
             }
 
-           // UpdateEstados(excelFiles);
-            UpdatePrecios(excelFiles);
+            UpdateEstados(excelFiles);
+            //UpdatePrecios(excelFiles);
         }
 
         private void UpdatePrecios(List<string> excelFiles)
@@ -65,22 +65,22 @@ namespace JsonFilesGenerator
                 file1 = file2;
             }
 
-           // FirebaseClient.UpdatePrecios(jsonPatchFiles);
+            //FirebaseClient.UpdatePrecios(jsonPatchFiles);
         }
 
         private void UpdateEstados(List<string> excelFiles)
         {
-            List<string> jsonPatchFiles = new List<string>();
-            //First values
-            jsonPatchFiles.Add(@"D:\repos\GasolinaDownloader\Downloader\JsonFiles\20170101-20170203estados.json");
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
+
             List<string> jsonFiles = Json.GenerateEstadosJsonFiles(jsonFilesDirectory, excelFiles);
+            List<string> jsonPatchFiles = new List<string>();
             string file1 = string.Empty;
             string file2 = string.Empty;
             foreach (string file in jsonFiles)
             {
                 if (file1.Equals(string.Empty))
                 {
+                    jsonPatchFiles.Add(file);
                     file1 = file;
                     continue;
                 }
@@ -93,7 +93,16 @@ namespace JsonFilesGenerator
                 file1 = file2;
             }
 
-            FirebaseClient.UpdateEstados(jsonPatchFiles);
+            string baseFile = Path.Combine(jsonFilesDirectory, "estados.json");
+            if (File.Exists(baseFile) == false)
+                File.Copy(jsonFiles[0], baseFile);
+
+            foreach (string patchFile in jsonPatchFiles)
+            {
+                Json.PatchFile(baseFile, patchFile);
+            }
+
+            //FirebaseClient.UpdateEstados(baseFile);
         }
     }
 }
