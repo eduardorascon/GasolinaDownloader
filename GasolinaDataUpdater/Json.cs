@@ -96,6 +96,8 @@ namespace DownloaderLibrary
             JToken y = JObject.Parse(File.ReadAllText(file2));
 
             JToken diff = jsonDiff.Diff(x, y);
+            diff = RemoveDeleteNodesFromJson(diff);
+
             if (diff == null)
                 return string.Empty;
 
@@ -122,9 +124,6 @@ namespace DownloaderLibrary
             JToken y = JObject.Parse(File.ReadAllText(file2));
 
             JToken diff = jsonDiff.Diff(x, y);
-            diff = RemoveDeleteNodesFromJson(diff);
-            //RemoveDeleteNodesFromJson(diff);
-
             if (diff == null)
                 return;
 
@@ -141,12 +140,9 @@ namespace DownloaderLibrary
             JToken newDiff = diff.DeepClone();
             foreach (JProperty prop in diff.Children<JProperty>())
             {
-                JArray t = (JArray)newDiff[prop.Name];
-                JArray a = t;
-                int arrayLength = a.Count;
-
-                if (a[arrayLength - 1].Value<int>() == 0 && a[arrayLength - 2].Value<int>() == 0)
-                    t.Parent.Remove();
+                JArray a = (JArray)newDiff[prop.Name];
+                if (a[a.Count - 1].Value<int>() == 0 && a[a.Count - 2].Value<int>() == 0)
+                    a.Parent.Remove();
             }
 
             if (newDiff.FirstOrDefault() == null)
