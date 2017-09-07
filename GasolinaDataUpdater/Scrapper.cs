@@ -82,7 +82,7 @@ namespace DownloaderLibrary
 
         private static string GetFileName(string file)
         {
-            string startIndexString = "nortedel";
+            string startIndexString = file.Contains("norteal") ? "norteal" : "nortedel";
             int startIndex = file.LastIndexOf(startIndexString) + startIndexString.Length;
             string[] dateArray = file.Substring(startIndex).Replace(".xlsx", "").Split(new string[] { "de" }, StringSplitOptions.None);
             string[] dayArray = dateArray[0].Split(new string[] { "al" }, StringSplitOptions.None);
