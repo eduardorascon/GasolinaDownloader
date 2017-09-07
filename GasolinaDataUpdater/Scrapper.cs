@@ -51,16 +51,16 @@ namespace DownloaderLibrary
 
             //Return variable.
             List<string> newExcelFiles = new List<string>();
-            string newfile = string.Empty;
             foreach (string fileToDownload in files)
             {
-                newfile = Path.Combine(downloadDirectory, GetFileName(fileToDownload));
+                string fileName = GetFileName(fileToDownload);
+                string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(4, 2), fileName);
 
-                if (File.Exists(newfile))
+                if (File.Exists(fileDestination))
                     continue;
 
-                DownloadExcelFile(fileToDownload, newfile);
-                newExcelFiles.Add(newfile);
+                DownloadExcelFile(fileToDownload, fileDestination);
+                newExcelFiles.Add(fileDestination);
             }
 
             return newExcelFiles;
