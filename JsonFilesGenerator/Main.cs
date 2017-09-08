@@ -37,16 +37,15 @@ namespace JsonFilesGenerator
             }
 
             UpdateEstados(excelFiles);
-            //UpdatePrecios(excelFiles);
+            UpdatePrecios(excelFiles);
         }
 
         private void UpdatePrecios(List<string> excelFiles)
         {
-            List<string> jsonPatchFiles = new List<string>();
-            //First values
-            jsonPatchFiles.Add(@"D:\repos\GasolinaDownloader\Downloader\JsonFiles\20170101-20170203precios.json");
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
+
             List<string> jsonFiles = Json.GeneratePreciosJsonFiles(jsonFilesDirectory, excelFiles);
+            List<string> jsonPatchFiles = new List<string>();
             string file1 = string.Empty;
             string file2 = string.Empty;
             foreach (string file in jsonFiles)
@@ -63,6 +62,15 @@ namespace JsonFilesGenerator
                     jsonPatchFiles.Add(diffFile);
 
                 file1 = file2;
+            }
+
+            //string baseFile = Path.Combine(jsonFilesDirectory, "precios.json");
+            //if (File.Exists(baseFile) == false)
+            //    File.Copy(jsonFiles[0], baseFile);
+
+            foreach (string patchFile in jsonPatchFiles)
+            {
+                //Json.PatchFile(baseFile, patchFile);
             }
 
             //FirebaseClient.UpdatePrecios(jsonPatchFiles);
@@ -93,13 +101,13 @@ namespace JsonFilesGenerator
                 file1 = file2;
             }
 
-            string baseFile = Path.Combine(jsonFilesDirectory, "estados.json");
-            if (File.Exists(baseFile) == false)
-                File.Copy(jsonFiles[0], baseFile);
+            //string baseFile = Path.Combine(jsonFilesDirectory, "estados.json");
+            //if (File.Exists(baseFile) == false)
+            //    File.Copy(jsonFiles[0], baseFile);
 
             foreach (string patchFile in jsonPatchFiles)
             {
-                Json.PatchFile(baseFile, patchFile);
+                //Json.PatchFile(baseFile, patchFile);
             }
 
             //FirebaseClient.UpdateEstados(baseFile);

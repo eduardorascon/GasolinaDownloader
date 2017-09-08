@@ -19,11 +19,19 @@ namespace DownloaderLibrary
             {
                 try
                 {
+                    if (File.Exists(file))
+                        continue;
+
                     List<PriceDTO> precios = ExcelFileReader.Read(file);
-                    string fileName = Path.Combine(jsonDirectory, Path.GetFileNameWithoutExtension(file) + "estados.json");
-                    jsonFiles.Add(fileName);
+                    string fileName = Path.GetFileNameWithoutExtension(file) + "estados.json";
+                    string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
+
+                    if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
+                        Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
+
+                    jsonFiles.Add(fileDestination);
                     string estadosJson = GenerateJsonEstados(precios);
-                    File.WriteAllText(fileName, estadosJson);
+                    File.WriteAllText(fileDestination, estadosJson);
                 }
                 catch (Exception)
                 {
@@ -40,11 +48,19 @@ namespace DownloaderLibrary
             {
                 try
                 {
+                    if (File.Exists(file))
+                        continue;
+
                     List<PriceDTO> precios = ExcelFileReader.Read(file);
-                    string fileName = Path.Combine(jsonDirectory, Path.GetFileNameWithoutExtension(file) + "precios.json");
-                    jsonFiles.Add(fileName);
+                    string fileName = Path.GetFileNameWithoutExtension(file) + "precios.json";
+                    string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
+
+                    if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
+                        Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
+
+                    jsonFiles.Add(fileDestination);
                     string preciosJson = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(file).Substring(0, 8));
-                    File.WriteAllText(fileName, preciosJson);
+                    File.WriteAllText(fileDestination, preciosJson);
                 }
                 catch (Exception)
                 {
@@ -96,7 +112,7 @@ namespace DownloaderLibrary
             JToken y = JObject.Parse(File.ReadAllText(file2));
 
             JToken diff = jsonDiff.Diff(x, y);
-            diff = RemoveDeleteNodesFromJson(diff);
+            //diff = RemoveDeleteNodesFromJson(diff);
 
             if (diff == null)
                 return string.Empty;
