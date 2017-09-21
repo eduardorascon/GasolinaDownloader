@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloaderLibrary", "Gasoli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonFilesGenerator", "JsonFilesGenerator\JsonFilesGenerator.csproj", "{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloadApp", "DownloadApp\DownloadApp.csproj", "{A72F5024-9C26-4755-9D78-239DB7E85CAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A4D1D0F-9E9D-41C0-B632-101CD0FE02AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A72F5024-9C26-4755-9D78-239DB7E85CAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A72F5024-9C26-4755-9D78-239DB7E85CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A72F5024-9C26-4755-9D78-239DB7E85CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A72F5024-9C26-4755-9D78-239DB7E85CAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
