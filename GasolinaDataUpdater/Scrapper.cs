@@ -82,29 +82,22 @@ namespace DownloaderLibrary
 
         private static string GetFileName(string file)
         {
-            string startIndexString = file.Contains("norteal") ? "norteal" : "nortedel";
+            string startIndexString = file.Contains("PMAX") ? "PMAX" : (file.Contains("norteal") ? "norteal" : "nortedel");
             int startIndex = file.LastIndexOf(startIndexString) + startIndexString.Length;
-            string[] dateArray = file.Substring(startIndex).Replace(".xlsx", "").Split(new string[] { "de" }, StringSplitOptions.None);
-            string[] dayArray = dateArray[0].Split(new string[] { "al" }, StringSplitOptions.None);
+            file = file.Substring(startIndex).Replace("de", "").Replace(".xlsx", "").Replace("al", "-");
 
+            string[] dayArray = file.Split(new string[] { "-" }, StringSplitOptions.None);
             string newFileName = string.Empty;
-            foreach (string day in dayArray)
+            if (dayArray.Length == 2)
             {
-                if (string.IsNullOrEmpty(newFileName))
-                {
-                    newFileName = dateArray[2];
-                    newFileName += DateTime.ParseExact(dateArray[1], "MMMM", new CultureInfo("es-MX")).ToString("MM");
-                    newFileName += ("0" + day).Substring(("0" + day).Length - 2);
-                    continue;
-                }
-
-                if (newFileName.Length == 8)
-                {
-                    newFileName += "-" + dateArray[2];
-                    newFileName += DateTime.ParseExact(dateArray[1], "MMMM", new CultureInfo("es-MX")).ToString("MM");
-                    newFileName += ("0" + day).Substring(("0" + day).Length - 2);
-                }
+                string temp = DateTime.ParseExact(dayArray[1], "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+                newFileName = temp.Substring(0, temp.Length - 2) + dayArray[0] + "-" + temp;
             }
+            else
+            {
+                newFileName = DateTime.ParseExact(dayArray[0], "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+            }
+
 
             return newFileName + ".xlsx";
         }
