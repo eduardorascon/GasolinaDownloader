@@ -54,7 +54,10 @@ namespace DownloaderLibrary
             foreach (string fileToDownload in files)
             {
                 string fileName = GetFileName(fileToDownload);
-                string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(4, 2), fileName);
+                string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(4, 2));
+
+                Directory.CreateDirectory(fileDestination);
+                fileDestination = Path.Combine(fileDestination, fileName);
 
                 if (File.Exists(fileDestination))
                     continue;
