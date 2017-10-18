@@ -40,7 +40,7 @@ namespace JsonFilesGenerator
             UpdatePrecios(excelFiles);
         }
 
-        private void UpdatePrecios(List<string> excelFiles)
+        private void UpdatePrecios(string excelFile)
         {
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
 
@@ -73,7 +73,7 @@ namespace JsonFilesGenerator
                 //Json.PatchFile(baseFile, patchFile);
             }
 
-            //FirebaseClient.UpdatePrecios(jsonPatchFiles);
+            FirebaseClient.UpdatePrecios(jsonPatchFiles);
         }
 
         private void UpdateEstados(List<string> excelFiles)

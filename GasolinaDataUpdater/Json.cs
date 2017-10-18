@@ -41,34 +41,27 @@ namespace DownloaderLibrary
 
             return jsonFiles;
         }
-        public static List<string> GeneratePreciosJsonFiles(string jsonDirectory, List<string> excelFiles)
+        public static string GeneratePreciosJsonFiles(string jsonDirectory, string excelFile)
         {
-            List<string> jsonFiles = new List<string>();
-            foreach (string file in excelFiles)
+            try
             {
-                try
-                {
-                    if (File.Exists(file))
-                        continue;
 
-                    List<PriceDTO> precios = ExcelFileReader.Read(file);
-                    string fileName = Path.GetFileNameWithoutExtension(file) + "precios.json";
-                    string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
+                List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
+                string fileName = Path.GetFileNameWithoutExtension(excelFile) + "precios.json";
+                string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
 
-                    if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
+                if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
 
-                    jsonFiles.Add(fileDestination);
-                    string preciosJson = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(file).Substring(0, 8));
-                    File.WriteAllText(fileDestination, preciosJson);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                string preciosJson = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
+                File.WriteAllText(fileDestination, preciosJson);
+
+                return fileDestination;
             }
-
-            return jsonFiles;
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private static string GenerateJsonEstados(List<PriceDTO> precios)
