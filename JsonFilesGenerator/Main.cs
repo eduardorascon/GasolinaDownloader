@@ -32,6 +32,7 @@ namespace JsonFilesGenerator
                 string excelFile = startExcelFile[0];
                 //4. Updating firebase
                 UpdatePrecios(excelFile);
+                UpdateEstados(excelFile);
 
                 //5. startDate value is updated to the next available date.
                 string excelFilename = Path.GetFileNameWithoutExtension(startExcelFile[0]);
@@ -40,81 +41,22 @@ namespace JsonFilesGenerator
 
                 startDate = startDate.AddDays(1);
             }
-
-            UpdateEstados(excelFile);
         }
 
         private void UpdatePrecios(string excelFile)
         {
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
+            string jsonFile = Json.GeneratePreciosJsonFiles(jsonFilesDirectory, excelFile);
 
-            List<string> jsonFiles = Json.GeneratePreciosJsonFiles(jsonFilesDirectory, excelFiles);
-            List<string> jsonPatchFiles = new List<string>();
-            string file1 = string.Empty;
-            string file2 = string.Empty;
-            foreach (string file in jsonFiles)
-            {
-                if (file1.Equals(string.Empty))
-                {
-                    file1 = file;
-                    continue;
-                }
-
-                file2 = file;
-                string diffFile = Json.DiffandPatch(file1, file2);
-                if (File.Exists(diffFile))
-                    jsonPatchFiles.Add(diffFile);
-
-                file1 = file2;
-            }
-
-            //string baseFile = Path.Combine(jsonFilesDirectory, "precios.json");
-            //if (File.Exists(baseFile) == false)
-            //    File.Copy(jsonFiles[0], baseFile);
-
-            foreach (string patchFile in jsonPatchFiles)
-            {
-                //Json.PatchFile(baseFile, patchFile);
-            }
-
-            FirebaseClient.UpdatePrecios(jsonPatchFiles);
+            FirebaseClient.UpdatePrecios(jsonFile);
         }
 
-        private void UpdateEstados(List<string> excelFiles)
+        private void UpdateEstados(string excelFile)
         {
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
+            string jsonFile = Json.GenerateEstadosJsonFiles(jsonFilesDirectory, excelFile);
 
-            List<string> jsonFiles = Json.GenerateEstadosJsonFiles(jsonFilesDirectory, excelFiles);
-            List<string> jsonPatchFiles = new List<string>();
-            string file1 = string.Empty;
-            string file2 = string.Empty;
-            foreach (string file in jsonFiles)
-            {
-                if (file1.Equals(string.Empty))
-                {
-                    jsonPatchFiles.Add(file);
-                    file1 = file;
-                    continue;
-                }
-
-                file2 = file;
-                string diffFile = Json.DiffandPatch(file1, file2);
-                if (File.Exists(diffFile))
-                    jsonPatchFiles.Add(diffFile);
-
-                file1 = file2;
-            }
-
-            //string baseFile = Path.Combine(jsonFilesDirectory, "estados.json");
-            //if (File.Exists(baseFile) == false)
-            //    File.Copy(jsonFiles[0], baseFile);
-
-            foreach (string patchFile in jsonPatchFiles)
-            {
-                //Json.PatchFile(baseFile, patchFile);
-            }
-
-            //FirebaseClient.UpdateEstados(baseFile);
+            FirebaseClient.UpdateEstados(jsonFile);
         }
     }
 }

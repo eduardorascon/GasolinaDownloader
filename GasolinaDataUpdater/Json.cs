@@ -12,34 +12,27 @@ namespace DownloaderLibrary
 {
     public class Json
     {
-        public static List<string> GenerateEstadosJsonFiles(string jsonDirectory, List<string> excelFiles)
+        public static string GenerateEstadosJsonFiles(string jsonDirectory, string excelFile)
         {
-            List<string> jsonFiles = new List<string>();
-            foreach (string file in excelFiles)
+            try
             {
-                try
-                {
-                    if (File.Exists(file))
-                        continue;
 
-                    List<PriceDTO> precios = ExcelFileReader.Read(file);
-                    string fileName = Path.GetFileNameWithoutExtension(file) + "estados.json";
-                    string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
+                List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
+                string fileName = Path.GetFileNameWithoutExtension(excelFile) + "estados.json";
+                string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
 
-                    if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
+                if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
 
-                    jsonFiles.Add(fileDestination);
-                    string estadosJson = GenerateJsonEstados(precios);
-                    File.WriteAllText(fileDestination, estadosJson);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                string estadosJson = GenerateJsonEstados(precios);
+                File.WriteAllText(fileDestination, estadosJson);
+
+                return fileDestination;
             }
-
-            return jsonFiles;
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public static string GeneratePreciosJsonFiles(string jsonDirectory, string excelFile)
         {
