@@ -24,7 +24,7 @@ namespace DownloaderLibrary
                 if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
                     Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
 
-                string estadosJson = GenerateJsonEstados(precios);
+                string estadosJson = GenerateJsonEstados(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
                 File.WriteAllText(fileDestination, estadosJson);
 
                 return fileDestination;
@@ -57,13 +57,13 @@ namespace DownloaderLibrary
             }
         }
 
-        private static string GenerateJsonEstados(List<PriceDTO> precios)
+        private static string GenerateJsonEstados(List<PriceDTO> precios, string fechaArchivo)
         {
             HashSet<string> listToJson = new HashSet<string>();
             foreach (PriceDTO e in precios)
                 listToJson.Add(e.entidad);
 
-            Dictionary<string, bool> dict = listToJson.ToDictionary(h => h, h => true);
+            Dictionary<string, string> dict = listToJson.ToDictionary(h => h, h => fechaArchivo);
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
 

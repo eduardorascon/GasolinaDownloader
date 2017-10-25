@@ -21,17 +21,17 @@ namespace JsonFilesGenerator
             btnGenerar.Enabled = false;
             string excelFilesDirectory = ConfigurationManager.AppSettings["excel_storage"];
             DateTime startDate = new DateTime(2017, 1, 1);
-            DateTime endDate = DateTime.Today;
 
             //2. We need to update firebase from the startDate to the current date.
-            while (startDate <= endDate)
+            while (startDate <= DateTime.Today)
             {
-                //3. Lest list the excel file if its name matches with the startDate variable.
+                //3. Lets list the excel file if its name matches with the startDate variable.
                 string excelDir = Path.Combine(excelFilesDirectory, startDate.ToString("MM"));
                 string[] startExcelFile = Directory.GetFiles(excelDir, startDate.ToString("yyyyMMdd") + "*");
                 string excelFile = startExcelFile[0];
+
                 //4. Updating firebase
-                UpdatePrecios(excelFile);
+                //UpdatePrecios(excelFile);
                 UpdateEstados(excelFile);
 
                 //5. startDate value is updated to the next available date.
