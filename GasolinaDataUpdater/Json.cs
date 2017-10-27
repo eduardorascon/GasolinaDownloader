@@ -38,14 +38,16 @@ namespace DownloaderLibrary
         {
             try
             {
-
-                List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
                 string fileName = Path.GetFileNameWithoutExtension(excelFile) + "precios.json";
-                string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
+                string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(0, 4), fileName);
+
+                if (File.Exists(fileDestination))
+                    return string.Empty;
 
                 if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
                     Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
 
+                List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
                 string preciosJson = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
                 File.WriteAllText(fileDestination, preciosJson);
 
