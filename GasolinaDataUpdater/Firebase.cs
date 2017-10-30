@@ -8,12 +8,11 @@ namespace DownloaderLibrary
 {
     public class FirebaseClient
     {
-        public static void UpdateEstados(string file)
+        public static void UpdateEstados(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
 
-            string endpoint = base_firebase_url + "estados.json?auth=";
-            string json = File.ReadAllText(file);
+            string endpoint = base_firebase_url + "estados.json?auth=pgb51I8kPTkMZQhSHWTVFop5V7HNMoIzxPRyPOOk";
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
             request.ContentType = "application/json";
@@ -24,12 +23,11 @@ namespace DownloaderLibrary
             json = new StreamReader(response.GetResponseStream()).ReadToEnd();
         }
 
-        public static void UpdatePrecios(string file)
+        public static void UpdatePrecios(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
 
-            string endpoint = base_firebase_url + "precios.json?auth=";
-            string json = File.ReadAllText(file);
+            string endpoint = base_firebase_url + "precios.json?auth=pgb51I8kPTkMZQhSHWTVFop5V7HNMoIzxPRyPOOk";
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
             request.ContentType = "application/json";
