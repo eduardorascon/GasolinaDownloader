@@ -12,48 +12,31 @@ namespace DownloaderLibrary
 {
     public class Json
     {
-        public static string GenerateEstadosJsonFiles(string jsonDirectory, string excelFile)
+        public static void GenerateJsonFiles(string jsonDirectory, string excelFile)
         {
             try
             {
-                string fileName = Path.GetFileNameWithoutExtension(excelFile) + "estados.json";
-                string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(4, 2), fileName);
-
-                if (File.Exists(fileDestination))
-                    return string.Empty;
-
-                if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
-                    Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
-
-                List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
-                string estadosJson = GenerateJsonEstados(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
-                File.WriteAllText(fileDestination, estadosJson);
-
-                return fileDestination;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-        public static string GeneratePreciosJsonFiles(string jsonDirectory, string excelFile)
-        {
-            try
-            {
-                string fileName = Path.GetFileNameWithoutExtension(excelFile) + "precios.json";
+                string fileName = Path.GetFileNameWithoutExtension(excelFile);
                 string fileDestination = Path.Combine(jsonDirectory, fileName.Substring(0, 4), fileName);
 
-                if (File.Exists(fileDestination))
-                    return string.Empty;
+                if (File.Exists(fileDestination + "precios.json"))
+                    return;
 
                 if (Directory.Exists(Path.GetDirectoryName(fileDestination)) == false)
                     Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
 
                 List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
-                string preciosJson = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
-                File.WriteAllText(fileDestination, preciosJson);
 
-                return fileDestination;
+                string preciosJsonString = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
+                FirebaseClient.UpdatePrecios(preciosJsonString);
+
+                File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
+
+                string estadosJsonString = GenerateJsonEstados(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
+                FirebaseClient.UpdateEstados(estadosJsonString);
+
+                File.WriteAllText(fileDestination + "estados.json", estadosJsonString);
+
             }
             catch (Exception)
             {
@@ -93,68 +76,6 @@ namespace DownloaderLibrary
             }
 
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
-        }
-
-        public static string DiffandPatch(string file1, string file2)
-        {
-            JsonDiffPatch jsonDiff = new JsonDiffPatch();
-            JToken x = JObject.Parse(File.ReadAllText(file1));
-            JToken y = JObject.Parse(File.ReadAllText(file2));
-
-            JToken diff = jsonDiff.Diff(x, y);
-            //diff = RemoveDeleteNodesFromJson(diff);
-
-            if (diff == null)
-                return string.Empty;
-
-            JToken patch = jsonDiff.Patch(x, diff);
-
-            try
-            {
-                string diffFile = Path.Combine(Path.GetDirectoryName(file1), Path.GetFileNameWithoutExtension(file1) + "_diff.json");
-                string patchFile = Path.Combine(Path.GetDirectoryName(file1), Path.GetFileNameWithoutExtension(file1) + "_patch.json");
-                File.WriteAllText(diffFile, JsonConvert.SerializeObject(diff, Formatting.Indented));
-                File.WriteAllText(patchFile, JsonConvert.SerializeObject(patch, Formatting.Indented));
-                return patchFile;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public static void PatchFile(string file1, string file2)
-        {
-            JsonDiffPatch jsonDiff = new JsonDiffPatch();
-            JToken x = JObject.Parse(File.ReadAllText(file1));
-            JToken y = JObject.Parse(File.ReadAllText(file2));
-
-            JToken diff = jsonDiff.Diff(x, y);
-            if (diff == null)
-                return;
-
-            JToken patch = jsonDiff.Patch(x, diff);
-
-            File.WriteAllText(file1, JsonConvert.SerializeObject(patch, Formatting.Indented));
-        }
-
-        private static JToken RemoveDeleteNodesFromJson(JToken diff)
-        {
-            if (diff == null)
-                return null;
-
-            JToken newDiff = diff.DeepClone();
-            foreach (JProperty prop in diff.Children<JProperty>())
-            {
-                JArray a = (JArray)newDiff[prop.Name];
-                if (a[a.Count - 1].Value<int>() == 0 && a[a.Count - 2].Value<int>() == 0)
-                    a.Parent.Remove();
-            }
-
-            if (newDiff.FirstOrDefault() == null)
-                return null;
-
-            return newDiff;
         }
     }
 }
