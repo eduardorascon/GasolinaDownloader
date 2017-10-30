@@ -28,14 +28,12 @@ namespace DownloaderLibrary
                 List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
 
                 string preciosJsonString = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
+                File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
                 FirebaseClient.UpdatePrecios(preciosJsonString);
 
-                File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
-
                 string estadosJsonString = GenerateJsonEstados(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
-                FirebaseClient.UpdateEstados(estadosJsonString);
-
                 File.WriteAllText(fileDestination + "estados.json", estadosJsonString);
+                FirebaseClient.UpdateEstados(estadosJsonString);
 
             }
             catch (Exception)
@@ -66,7 +64,7 @@ namespace DownloaderLibrary
                 try
                 {
                     var d = dict[e.entidad];
-                    d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}|F:{3}", e.magna, e.premium, e.diesel, fechaArchivo));
+                    d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
                 }
                 catch
                 {
@@ -75,7 +73,7 @@ namespace DownloaderLibrary
                 }
             }
 
-            return JsonConvert.SerializeObject(dict, Formatting.Indented);
+            return fechaArchivo + ": " + JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
     }
 }
