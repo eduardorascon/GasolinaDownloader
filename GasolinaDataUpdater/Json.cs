@@ -27,13 +27,13 @@ namespace DownloaderLibrary
 
                 List<PriceDTO> precios = ExcelFileReader.Read(excelFile);
 
-                string preciosJsonString = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
-                File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
-                FirebaseClient.UpdatePrecios(preciosJsonString);
-
                 string estadosJsonString = GenerateJsonEstados(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
                 File.WriteAllText(fileDestination + "estados.json", estadosJsonString);
                 FirebaseClient.UpdateEstados(estadosJsonString);
+
+                string preciosJsonString = GenerateJsonPrecios(precios, Path.GetFileNameWithoutExtension(excelFile).Substring(0, 8));
+                File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
+                FirebaseClient.UpdatePrecios(preciosJsonString);
 
             }
             catch (Exception)
@@ -46,7 +46,7 @@ namespace DownloaderLibrary
         {
             HashSet<string> listToJson = new HashSet<string>();
             foreach (PriceDTO e in precios)
-                listToJson.Add(e.entidad);
+                listToJson.Add(e.Entidad);
 
             Dictionary<string, string> dict = listToJson.ToDictionary(h => h, h => fechaArchivo);
             return JsonConvert.SerializeObject(dict, Formatting.Indented);
@@ -56,24 +56,28 @@ namespace DownloaderLibrary
         {
             HashSet<string> listToJson = new HashSet<string>();
             foreach (PriceDTO e in precios)
-                listToJson.Add(e.entidad);
+                listToJson.Add(e.Entidad);
 
             Dictionary<string, Dictionary<string, string>> dict = listToJson.ToDictionary(h => h, h => new Dictionary<string, string>());
             foreach (PriceDTO e in precios)
             {
                 try
                 {
-                    var d = dict[e.entidad];
-                    d.Add(e.ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.magna, e.premium, e.diesel));
+                    var d = dict[e.Entidad];
+                    d.Add(e.Ciudad, string.Format("M:{0}|P:{1}|D:{2}", e.Magna, e.Premium, e.Diesel));
                 }
                 catch
                 {
                     string rutaLog = ConfigurationManager.AppSettings["ruta_log"];
-                    File.AppendAllText(rutaLog, string.Format("Duplicado: {0}:{1}{2}", e.entidad, e.ciudad, Environment.NewLine));
+                    File.AppendAllText(rutaLog, string.Format("Duplicado: {0}:{1}{2}", e.Entidad, e.Ciudad, Environment.NewLine));
                 }
             }
 
-            return fechaArchivo + ": " + JsonConvert.SerializeObject(dict, Formatting.Indented);
+            HashSet<string> c = new HashSet<string>();
+            c.Add(fechaArchivo);
+            var dict2 = c.ToDictionary(h => h, h => dict);
+
+            return JsonConvert.SerializeObject(dict2, Formatting.Indented);
         }
     }
 }
