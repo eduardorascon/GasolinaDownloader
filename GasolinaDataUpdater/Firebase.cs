@@ -11,7 +11,6 @@ namespace DownloaderLibrary
         public static void UpdateEstados(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
-
             string endpoint = base_firebase_url + "estados.json?auth=";
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
@@ -26,7 +25,6 @@ namespace DownloaderLibrary
         public static void UpdatePrecios(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
-
             string endpoint = base_firebase_url + "precios.json?auth=";
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
