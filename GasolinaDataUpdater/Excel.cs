@@ -34,11 +34,11 @@ namespace DownloaderLibrary
                     string cell = "D" + startrow;
                     precios.Add(new PriceDTO()
                     {
-                        entidad = m.First().Value.ToString(),
-                        ciudad = worksheet.Cells[cell].Value.ToString(),
-                        magna = worksheet.Cells[cell.Replace("D", "E")].Value.ToString(),
-                        premium = worksheet.Cells[cell.Replace("D", "F")].Value.ToString(),
-                        diesel = worksheet.Cells[cell.Replace("D", "G")].Value.ToString()
+                        Entidad = m.First().Value.ToString(),
+                        Ciudad = worksheet.Cells[cell].Value.ToString(),
+                        Magna = worksheet.Cells[cell.Replace("D", "E")].Value.ToString(),
+                        Premium = worksheet.Cells[cell.Replace("D", "F")].Value.ToString(),
+                        Diesel = worksheet.Cells[cell.Replace("D", "G")].Value.ToString()
                     });
 
                     startrow++;

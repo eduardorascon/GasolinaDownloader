@@ -2,10 +2,32 @@
 {
     public class PriceDTO
     {
-        public string entidad { get; set; }
-        public string ciudad { get; set; }
-        public string magna { get; set; }
-        public string premium { get; set; }
-        public string diesel { get; set; }
+        public string Ciudad { get; set; }
+        public string Magna { get; set; }
+        public string Premium { get; set; }
+        public string Diesel { get; set; }
+
+        private string _entidad;
+        public string Entidad
+        {
+            get
+            {
+                switch (_entidad)
+                {
+                    case "COAHUILA DE ZARAGOZA":
+                        return "COAHUILA";
+                    case "MICHOACÁN DE OCAMPO":
+                        return "MICHOACÁN";
+                    case "VERACRUZ DE IGNACIO DE LA LLAVE":
+                        return "VERACRUZ";
+                    default:
+                        return _entidad;
+                }
+            }
+            set
+            {
+                _entidad = value;
+            }
+        }
     }
 }
