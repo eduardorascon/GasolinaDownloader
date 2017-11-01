@@ -55,13 +55,12 @@ namespace DownloaderLibrary
             {
                 string fileName = GetFileName(fileToDownload);
                 string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(0, 4));
-
-                Directory.CreateDirectory(fileDestination);
                 fileDestination = Path.Combine(fileDestination, fileName);
 
                 if (File.Exists(fileDestination))
                     continue;
 
+                Directory.CreateDirectory(fileDestination);
                 DownloadExcelFile(fileToDownload, fileDestination);
                 newExcelFiles.Add(fileDestination);
             }
