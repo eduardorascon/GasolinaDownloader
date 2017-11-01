@@ -35,6 +35,9 @@ namespace DownloaderLibrary
                 File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
                 FirebaseClient.UpdatePrecios(preciosJsonString);
 
+                Dictionary<string, string> lastUpdateDict = new Dictionary<string, string>();
+                lastUpdateDict.Add("last_update", fileName);
+                FirebaseClient.SetLastUpdate(JsonConvert.SerializeObject(lastUpdateDict));
             }
             catch (Exception)
             {
