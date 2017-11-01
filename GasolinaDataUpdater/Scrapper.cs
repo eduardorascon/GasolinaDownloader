@@ -54,7 +54,7 @@ namespace DownloaderLibrary
             foreach (string fileToDownload in files)
             {
                 string fileName = GetFileName(fileToDownload);
-                string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(4, 2));
+                string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(0, 4));
 
                 Directory.CreateDirectory(fileDestination);
                 fileDestination = Path.Combine(fileDestination, fileName);
@@ -98,7 +98,11 @@ namespace DownloaderLibrary
             }
             else
             {
-                newFileName = DateTime.ParseExact(dayArray[0], "ddMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
+                DateTime tempDate;
+                if (DateTime.TryParseExact(dayArray[0], "ddMMMMyyyy", new CultureInfo("es-MX"), DateTimeStyles.None, out tempDate))
+                    newFileName = tempDate.ToString("yyyyMMdd");
+                else
+                    newFileName = DateTime.ParseExact(dayArray[0], "dMMMMyyyy", new CultureInfo("es-MX")).ToString("yyyyMMdd");
             }
 
 
