@@ -20,7 +20,7 @@ namespace JsonFilesGenerator
             btnGenerar.Enabled = false;
             string excelFilesDirectory = ConfigurationManager.AppSettings["excel_storage"];
             string jsonFilesDirectory = ConfigurationManager.AppSettings["json_storage"];
-            DateTime startDate = new DateTime(2017, 1, 1);
+            DateTime startDate = DateTime.ParseExact(Json.GetLastUpdate(), "yyyyMMdd", CultureInfo.InvariantCulture);
 
             //2. We need to update firebase from the startDate to the current date.
             while (startDate <= DateTime.Today)

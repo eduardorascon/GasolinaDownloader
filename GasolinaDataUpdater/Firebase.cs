@@ -21,6 +21,15 @@ namespace DownloaderLibrary
             WebResponse response = request.GetResponse();
             json = new StreamReader(response.GetResponseStream()).ReadToEnd();
         }
+        public static string GetLastUpdate()
+        {
+            string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
+            string endpoint = base_firebase_url + "configuracion/last_update.json";
+            HttpWebRequest request = WebRequest.CreateHttp(endpoint);
+            request.ContentType = "application/json";
+            WebResponse response = request.GetResponse();
+            return new StreamReader(response.GetResponseStream()).ReadToEnd();
+        }
         public static void UpdateEstados(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];

@@ -44,7 +44,12 @@ namespace DownloaderLibrary
                 throw;
             }
         }
-
+        public static string GetLastUpdate()
+        {
+            string firebaseValue = FirebaseClient.GetLastUpdate();
+            object lastUpdate = JsonConvert.DeserializeObject(firebaseValue);
+            return lastUpdate.ToString();
+        }
         private static string GenerateJsonEstados(List<PriceDTO> precios, string fechaArchivo)
         {
             HashSet<string> listToJson = new HashSet<string>();
