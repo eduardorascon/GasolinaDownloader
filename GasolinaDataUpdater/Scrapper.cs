@@ -46,9 +46,6 @@ namespace DownloaderLibrary
             if (files.Count == 0 || string.IsNullOrEmpty(downloadDirectory))
                 throw new ArgumentNullException();
 
-            if (Directory.Exists(downloadDirectory) == false)
-                Directory.CreateDirectory(downloadDirectory);
-
             //Return variable.
             List<string> newExcelFiles = new List<string>();
             foreach (string fileToDownload in files)
@@ -56,11 +53,11 @@ namespace DownloaderLibrary
                 string fileName = GetFileName(fileToDownload);
                 string fileDestination = Path.Combine(downloadDirectory, fileName.Substring(0, 4));
                 fileDestination = Path.Combine(fileDestination, fileName);
-
+                
                 if (File.Exists(fileDestination))
                     continue;
 
-                Directory.CreateDirectory(fileDestination);
+                Directory.CreateDirectory(Path.GetDirectoryName(fileDestination));
                 DownloadExcelFile(fileToDownload, fileDestination);
                 newExcelFiles.Add(fileDestination);
             }
@@ -77,7 +74,7 @@ namespace DownloaderLibrary
             }
             catch (Exception)
             {
-                newFile = newFile.Replace("https://", "http://");
+                fileToDownload = fileToDownload.Replace("https://", "http://");
                 client.DownloadFile(fileToDownload, newFile);
             }
         }
