@@ -35,21 +35,38 @@ namespace DownloaderLibrary
                 File.WriteAllText(fileDestination + "precios.json", preciosJsonString);
                 FirebaseClient.UpdatePrecios(preciosJsonString);
 
-                Dictionary<string, string> lastUpdateDict = new Dictionary<string, string>();
-                lastUpdateDict.Add("last_update", fileName);
-                FirebaseClient.SetLastUpdate(JsonConvert.SerializeObject(lastUpdateDict));
+                string configurationJsonString = GenerateJsonConfiguration(fileName);
+                FirebaseClient.SetLastUpdate(configurationJsonString);
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
+        private static string GenerateJsonConfiguration(string fileName)
+        {
+            string lastUpdate = fileName;
+            string expirationDate = fileName;
+            if (fileName.Contains("-"))
+            {
+                expirationDate = fileName.Split('-')[1];
+            }
+
+            Dictionary<string, string> lastUpdateDict = new Dictionary<string, string>();
+            lastUpdateDict.Add("last_update", fileName);
+            lastUpdateDict.Add("expiration_date", expirationDate);
+
+            return JsonConvert.SerializeObject(lastUpdateDict);
+        }
+
         public static string GetLastUpdate()
         {
             string firebaseValue = FirebaseClient.GetLastUpdate();
             object lastUpdate = JsonConvert.DeserializeObject(firebaseValue);
             return lastUpdate.ToString();
         }
+
         private static string GenerateJsonEstados(List<PriceDTO> precios, string fechaArchivo)
         {
             HashSet<string> listToJson = new HashSet<string>();
