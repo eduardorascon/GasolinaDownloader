@@ -50,14 +50,15 @@ namespace DownloaderLibrary
             string expirationDate = fileName;
             if (fileName.Contains("-"))
             {
+                lastUpdate = fileName.Split('-')[0];
                 expirationDate = fileName.Split('-')[1];
             }
 
-            Dictionary<string, string> lastUpdateDict = new Dictionary<string, string>();
-            lastUpdateDict.Add("last_update", fileName);
-            lastUpdateDict.Add("expiration_date", expirationDate);
+            Dictionary<string, string> configurationDict = new Dictionary<string, string>();
+            configurationDict.Add("last_update", lastUpdate);
+            configurationDict.Add("expiration_date", expirationDate);
 
-            return JsonConvert.SerializeObject(lastUpdateDict);
+            return JsonConvert.SerializeObject(configurationDict);
         }
 
         public static string GetLastUpdate()
