@@ -68,6 +68,13 @@ namespace DownloaderLibrary
             return lastUpdate.ToString();
         }
 
+        public static string GetExpirationDate()
+        {
+            string firebaseValue = FirebaseClient.GetExpirationDate();
+            object expirationDate = JsonConvert.DeserializeObject(firebaseValue);
+            return expirationDate.ToString();
+        }
+
         private static string GenerateJsonEstados(List<PriceDTO> precios, string fechaArchivo)
         {
             HashSet<string> listToJson = new HashSet<string>();
