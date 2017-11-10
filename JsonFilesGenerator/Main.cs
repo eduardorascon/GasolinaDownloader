@@ -23,7 +23,7 @@ namespace JsonFilesGenerator
             DateTime startDate = DateTime.ParseExact(Json.GetLastUpdate(), "yyyyMMdd", CultureInfo.InvariantCulture);
             DateTime expirationDate = DateTime.ParseExact(Json.GetExpirationDate(), "yyyyMMdd", CultureInfo.InvariantCulture);
 
-            if (startDate < expirationDate)
+            if (startDate <= expirationDate)
                 startDate = expirationDate.AddDays(1);
 
             //2. We need to update firebase from the startDate to the current date.
@@ -31,7 +31,16 @@ namespace JsonFilesGenerator
             {
                 //3. List the excel file if its name matches with the startDate variable.
                 string excelDir = Path.Combine(excelFilesDirectory, startDate.ToString("yyyy"));
-                string excelFile = Directory.GetFiles(excelDir, startDate.ToString("yyyyMMdd") + "*")[0];
+                string excelFile = string.Empty;
+                try
+                {
+                    excelFile = Directory.GetFiles(excelDir, startDate.ToString("yyyyMMdd") + "*")[0];
+                }
+                catch (Exception)
+                {
+                    if (startDate == DateTime.Today.AddDays(1))
+                        break;
+                }
 
                 //4. Creating the json file.
                 Json.GenerateJsonFiles(jsonFilesDirectory, excelFile);
