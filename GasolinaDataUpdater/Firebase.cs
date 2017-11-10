@@ -8,10 +8,11 @@ namespace DownloaderLibrary
 {
     public class FirebaseClient
     {
+        private static string auth = "";
         public static void SetLastUpdate(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
-            string endpoint = base_firebase_url + "configuracion.json?auth=";
+            string endpoint = base_firebase_url + "configuracion.json?auth=" + auth;
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
             request.ContentType = "application/json";
@@ -44,7 +45,7 @@ namespace DownloaderLibrary
         public static void UpdateEstados(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
-            string endpoint = base_firebase_url + "estados.json?auth=";
+            string endpoint = base_firebase_url + "estados.json?auth=" + auth;
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
             request.ContentType = "application/json";
@@ -57,7 +58,7 @@ namespace DownloaderLibrary
         public static void UpdatePrecios(string json)
         {
             string base_firebase_url = ConfigurationManager.AppSettings["firebase_url"];
-            string endpoint = base_firebase_url + "precios.json?auth=";
+            string endpoint = base_firebase_url + "precios.json?auth=" + auth;
             HttpWebRequest request = WebRequest.CreateHttp(endpoint);
             request.Method = "PATCH";
             request.ContentType = "application/json";
