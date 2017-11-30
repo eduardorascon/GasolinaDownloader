@@ -15,7 +15,7 @@ namespace Downloader
             string excelFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["excel_storage"];
             excelFiles = WebScrapper.DownloadExcelFiles(excelFilesDirectory, excelFiles);
 
-            //Lets see if we can make this to update firebase again.
+            //the way gas prices are set seems to be changed, I need to check how this will affect this project.
             //string jsonFilesDirectory = HttpRuntime.AppDomainAppPath + ConfigurationManager.AppSettings["json_storage"];
             //List<string> estadosJsonFiles = Json.GenerateEstadosJsonFiles(jsonFilesDirectory, excelFiles);
             //List<string> preciosJsonFiles = Json.GeneratePreciosJsonFiles(jsonFilesDirectory, excelFiles);
